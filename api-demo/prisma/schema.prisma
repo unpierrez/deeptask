@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String           @id @default(uuid())
+  name          String
+  email         String           @unique
+  passwordHash  String?
+  avatarColor   String           @default("#c2864f")
+  accountType   String           @default("Conta pessoal")
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  refreshTokens RefreshToken[]
+  statuses      Status[]
+  tasks         Task[]
+  notifications Notification[]
+  preferences   UserPreferences?
+}
+
+model UserPreferences {
+  userId            String  @id
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accentColor       String  @default("#141414")
+  locale            String  @default("pt")
+  notifyDueSoon     Boolean @default(true)
+  notifyHighPrio    Boolean @default(true)
+  notifyCompleted   Boolean @default(true)
+  notifyAchievement Boolean @default(true)
+}
+
+model Status {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  color     String
+  isDone    Boolean  @default(false)
+  position  Int
+  createdAt DateTime @default(now())
+  tasks     Task[]   @relation("TaskCurrentStatus")
+  prevTasks Task[]   @relation("TaskPrevStatus")
+}
+
+model Task {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  statusId      String
+  status        Status         @relation("TaskCurrentStatus", fields: [statusId], references: [id])
+  prevStatusId  String?
+  prevStatus    Status?        @relation("TaskPrevStatus", fields: [prevStatusId], references: [id])
+  title         String
+  priority      String         @default("media")
+  dueDate       String?
+  position      Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  completedAt   DateTime?
+  tags          TaskTag[]
+  notifications Notification[]
+}
+
+model TaskTag {
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label  String
+
+  @@id([taskId, label])
+}
+
+model Notification {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String
+  message       String
+  relatedTaskId String?
+  relatedTask   Task?    @relation(fields: [relatedTaskId], references: [id], onDelete: SetNull)
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
