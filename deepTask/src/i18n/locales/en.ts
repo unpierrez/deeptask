@@ -16,7 +16,7 @@ export default {
         subtitle: 'Sign in with your credentials to continue.',
         forgotPassword: 'Forgot password?',
         orWithEmail: 'or with email',
-        keepLoggedIn: 'Keep me signed in',
+        keepLoggedIn: 'Remember me',
         continueWithGoogle: 'Google',
         continueWithGitHub: 'GitHub',
         submit: 'Sign in',

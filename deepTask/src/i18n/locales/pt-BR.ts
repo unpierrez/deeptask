@@ -16,7 +16,7 @@ export default {
         subtitle: 'Entre com suas credenciais para continuar.',
         forgotPassword: 'Esqueceu a senha?',
         orWithEmail: 'ou com e-mail',
-        keepLoggedIn: 'Manter-me conectado',
+        keepLoggedIn: 'Lembrar de mim',
         continueWithGoogle: 'Google',
         continueWithGitHub: 'GitHub',
         submit: 'Entrar',

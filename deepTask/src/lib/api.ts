@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export interface ApiRequestOptions {
     method?: string
@@ -6,7 +6,14 @@ export interface ApiRequestOptions {
     token?: string
 }
 
-async function request<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
+type TokenRefresher = () => Promise<string | null>
+let tokenRefresher: TokenRefresher | null = null
+
+export function setTokenRefresher(fn: TokenRefresher) {
+    tokenRefresher = fn
+}
+
+async function request<T>(path: string, options: ApiRequestOptions = {}, _retry = false): Promise<T> {
     const { method = 'GET', body, token } = options
     const headers = new Headers({ 'Content-Type': 'application/json' })
 
@@ -19,6 +26,13 @@ async function request<T>(path: string, options: ApiRequestOptions = {}): Promis
         headers,
         body: body !== undefined ? JSON.stringify(body) : undefined,
     })
+
+    if (response.status === 401 && !_retry && tokenRefresher) {
+        const newToken = await tokenRefresher()
+        if (newToken) {
+            return request<T>(path, { ...options, token: newToken }, true)
+        }
+    }
 
     const text = await response.text()
     const data = text ? JSON.parse(text) : null

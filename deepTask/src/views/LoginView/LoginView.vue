@@ -96,7 +96,7 @@ const {
           v-model="keepLoggedIn"
           type="checkbox"
           class="keep-check"
-          aria-label="Manter-me conectado"
+          aria-label="Lembrar de mim"
         />
         <span class="keep-label">{{ t('login.keepLoggedIn') }}</span>
       </label>

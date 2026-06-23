@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from './api'
+import { apiGet, apiPost, setTokenRefresher, API_URL } from './api'
 import type { User } from '../types'
 
 export interface AuthStorage {
@@ -42,16 +42,13 @@ export function isAuthenticated(): boolean {
     return Boolean(authState?.accessToken)
 }
 
-export async function login(email: string, password: string, keepLoggedIn = false) {
+export async function login(email: string, password: string) {
     const data = await apiPost<{ accessToken: string; refreshToken: string }>('auth/signin', {
         email,
         password,
     })
 
-    persistAuthState(
-        { accessToken: data.accessToken, refreshToken: data.refreshToken, user: null },
-        keepLoggedIn,
-    )
+    persistAuthState({ accessToken: data.accessToken, refreshToken: data.refreshToken, user: null })
 }
 
 export async function register(name: string, email: string, password: string) {
@@ -78,3 +75,32 @@ export async function fetchProfile(): Promise<User> {
 export function logout() {
     persistAuthState(null)
 }
+
+async function refreshTokens(): Promise<string | null> {
+    if (!authState?.refreshToken) return null
+
+    try {
+        const response = await fetch(`${API_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: authState.refreshToken }),
+        })
+
+        if (!response.ok) {
+            persistAuthState(null)
+            return null
+        }
+
+        const data: { accessToken: string; refreshToken: string } = await response.json()
+        const shouldPersist = Boolean(localStorage.getItem(STORAGE_KEY))
+        persistAuthState(
+            { accessToken: data.accessToken, refreshToken: data.refreshToken, user: authState.user },
+            shouldPersist,
+        )
+        return data.accessToken
+    } catch {
+        return null
+    }
+}
+
+setTokenRefresher(refreshTokens)
