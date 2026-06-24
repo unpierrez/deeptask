@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useQuasar } from 'quasar'
 import { logout } from '../../lib/auth'
+import { useViewPreference } from '../../composables/useViewPreference'
 import type { User } from '../../types'
 import type { Task, Status } from '../../types'
 
@@ -14,6 +16,8 @@ const props = defineProps<{
 
 const router = useRouter()
 const route = useRoute()
+const $q = useQuasar()
+const { viewMode, saveAsDefault } = useViewPreference()
 
 const doneStatusIds = computed(() => new Set(props.statuses.filter((s) => s.isDone).map((s) => s.id)))
 const total = computed(() => props.tasks.length)
@@ -37,6 +41,18 @@ const navItems = [
 
 function isActive(path: string) {
     return route.path.startsWith(path)
+}
+
+function handleSaveDefault() {
+    saveAsDefault()
+    const label = viewMode.value === 'kanban' ? 'Kanban' : 'Lista'
+    $q.notify({
+        message: `Visualização padrão salva: ${label}`,
+        icon: 'check_circle',
+        color: 'dark',
+        timeout: 2200,
+        position: 'bottom',
+    })
 }
 
 function handleLogout() {
@@ -93,6 +109,16 @@ function handleLogout() {
                 <q-icon name="settings" size="18px" />
                 <q-menu anchor="top right" self="bottom right" :offset="[0, 8]">
                     <q-list class="sidebar-menu">
+                        <q-item clickable v-close-popup class="sidebar-menu__item" @click="handleSaveDefault">
+                            <q-item-section avatar>
+                                <q-icon name="bookmark" size="16px" />
+                            </q-item-section>
+                            <q-item-section>
+                                <div class="sidebar-menu__item-label">Salvar visualização padrão</div>
+                                <div class="sidebar-menu__item-sub">{{ viewMode === 'kanban' ? 'Kanban' : 'Lista' }} atual</div>
+                            </q-item-section>
+                        </q-item>
+                        <q-separator class="sidebar-menu__sep" />
                         <q-item clickable v-close-popup class="sidebar-menu__item sidebar-menu__item--danger" @click="handleLogout">
                             <q-item-section avatar>
                                 <q-icon name="logout" size="16px" />
@@ -309,7 +335,7 @@ function handleLogout() {
 }
 
 .sidebar-menu {
-    min-width: 160px;
+    min-width: 200px;
     padding: 4px;
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
 
@@ -331,6 +357,24 @@ function handleLogout() {
                 background: #fff5f5;
             }
         }
+    }
+
+    &__item-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #141414;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+
+    &__item-sub {
+        font-size: 0.75rem;
+        color: #9aa3af;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        margin-top: 1px;
+    }
+
+    &__sep {
+        margin: 3px 4px;
     }
 }
 </style>

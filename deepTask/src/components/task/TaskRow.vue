@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Task } from '../../types'
+import { useDragDrop } from '../../composables/useDragDrop'
 
 const props = defineProps<{
     task: Task
@@ -11,6 +12,8 @@ const emit = defineEmits<{
     edit: [task: Task]
     delete: [task: Task]
 }>()
+
+const { draggingTask, startDrag, endDrag } = useDragDrop()
 
 const priorityConfig = {
     alta: { label: 'Alta', color: '#dd5a4b' },
@@ -27,7 +30,21 @@ function formatDate(date: string | null) {
 </script>
 
 <template>
-    <div class="task-row" :class="{ 'task-row--done': isDone }">
+    <div
+        class="task-row"
+        :class="{
+            'task-row--done': isDone,
+            'task-row--dragging': draggingTask?.id === task.id,
+        }"
+        draggable="true"
+        :data-task-id="task.id"
+        @dragstart="startDrag(task, $event)"
+        @dragend="endDrag()"
+    >
+        <div class="task-row__drag-handle">
+            <q-icon name="drag_indicator" size="16px" />
+        </div>
+
         <button class="task-row__checkbox" @click="emit('toggle', task)">
             <div class="task-row__checkbox-inner" :class="{ 'task-row__checkbox-inner--checked': isDone }">
                 <q-icon v-if="isDone" name="check" size="12px" />
@@ -84,7 +101,8 @@ function formatDate(date: string | null) {
     gap: 10px;
     padding: 10px 16px;
     border-bottom: 1px solid #f4f5f6;
-    transition: background 0.1s;
+    transition: background 0.1s, opacity 0.15s;
+    cursor: grab;
 
     &:last-child {
         border-bottom: none;
@@ -94,9 +112,31 @@ function formatDate(date: string | null) {
         background: #fafbfc;
     }
 
+    &:active {
+        cursor: grabbing;
+    }
+
     &--done .task-row__title {
         color: #9aa3af;
         text-decoration: line-through;
+    }
+
+    &--dragging {
+        opacity: 0.35;
+        cursor: grabbing;
+    }
+
+    &__drag-handle {
+        color: #d0d5dd;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        cursor: grab;
+        transition: color 0.12s;
+
+        .task-row:hover & {
+            color: #9aa3af;
+        }
     }
 
     &__checkbox {

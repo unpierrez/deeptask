@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import TaskGroup from '../../components/task/TaskGroup.vue'
+import KanbanBoard from '../../components/task/KanbanBoard.vue'
 import TaskModal from '../../components/task/TaskModal.vue'
 import StatusModal from '../../components/status/StatusModal.vue'
 import { useTasks } from '../../composables/useTasks'
 import { useStatuses } from '../../composables/useStatuses'
+import { useViewPreference } from '../../composables/useViewPreference'
 import type { Task, Status, TaskFilter } from '../../types'
 
-const { tasks, filter, searchQuery, fetchTasks, createTask, updateTask, completeTask, reopenTask, deleteTask } = useTasks()
+const { tasks, filter, searchQuery, fetchTasks, createTask, updateTask, completeTask, reopenTask, deleteTask, reorderTasks } = useTasks()
 const { statuses, fetchStatuses, createStatus, updateStatus, deleteStatus } = useStatuses()
+const { viewMode, setViewMode } = useViewPreference()
 
 const taskModalOpen = ref(false)
 const statusModalOpen = ref(false)
@@ -135,6 +138,44 @@ async function handleDeleteStatus(status: Status) {
     await deleteStatus(status.id)
 }
 
+async function handleTaskDropped(payload: {
+    taskId: string
+    targetStatusId: string
+    insertBeforeTaskId: string | null
+}) {
+    const { taskId, targetStatusId, insertBeforeTaskId } = payload
+
+    const dragged = tasks.value.find((t) => t.id === taskId)
+    if (!dragged) return
+
+    const sourceStatusId = dragged.statusId
+
+    // Full sorted list for the target group, without the dragged task
+    const targetList = tasks.value
+        .filter((t) => t.statusId === targetStatusId && t.id !== taskId)
+        .sort((a, b) => a.position - b.position)
+
+    const insertAt = insertBeforeTaskId
+        ? targetList.findIndex((t) => t.id === insertBeforeTaskId)
+        : -1
+
+    targetList.splice(insertAt === -1 ? targetList.length : insertAt, 0, dragged)
+
+    const items: { id: string; statusId: string; position: number }[] = []
+
+    // Reorder source group only if the task moved to a different status
+    if (sourceStatusId !== targetStatusId) {
+        tasks.value
+            .filter((t) => t.statusId === sourceStatusId && t.id !== taskId)
+            .sort((a, b) => a.position - b.position)
+            .forEach((t, i) => items.push({ id: t.id, statusId: sourceStatusId, position: i }))
+    }
+
+    targetList.forEach((t, i) => items.push({ id: t.id, statusId: targetStatusId, position: i }))
+
+    await reorderTasks(items)
+}
+
 onMounted(async () => {
     await Promise.all([fetchStatuses(), fetchTasks()])
     statuses.value.forEach((s) => {
@@ -161,33 +202,72 @@ defineExpose({ openNewTask })
                 </button>
             </div>
 
-            <button class="tasks-view__expand-btn" @click="toggleAll">
-                <q-icon :name="allExpanded ? 'unfold_less' : 'unfold_more'" size="16px" />
-                {{ expandLabel }}
-            </button>
+            <div class="tasks-view__toolbar-right">
+                <div class="tasks-view__view-toggle">
+                    <button
+                        class="tasks-view__view-btn"
+                        :class="{ 'tasks-view__view-btn--active': viewMode === 'list' }"
+                        title="Visualização em lista"
+                        @click="setViewMode('list')"
+                    >
+                        <q-icon name="view_list" size="18px" />
+                    </button>
+                    <button
+                        class="tasks-view__view-btn"
+                        :class="{ 'tasks-view__view-btn--active': viewMode === 'kanban' }"
+                        title="Visualização kanban"
+                        @click="setViewMode('kanban')"
+                    >
+                        <q-icon name="grid_view" size="16px" />
+                    </button>
+                </div>
+
+                <button v-if="viewMode === 'list'" class="tasks-view__expand-btn" @click="toggleAll">
+                    <q-icon :name="allExpanded ? 'unfold_less' : 'unfold_more'" size="16px" />
+                    {{ expandLabel }}
+                </button>
+            </div>
         </div>
 
-        <div class="tasks-view__list">
-            <template v-for="status in statuses" :key="status.id">
-                <TaskGroup
-                    v-if="shouldShowGroup(status.id)"
-                    :status="status"
-                    :tasks="getTasksForStatus(status.id)"
-                    :is-done-status="status.isDone"
-                    :start-collapsed="isGroupCollapsed(status.id)"
-                    @toggle-task="handleToggleTask"
-                    @edit-task="openEditTask"
-                    @delete-task="handleDeleteTask"
-                    @edit-status="openEditStatus"
-                    @add-task="openNewTask"
-                />
-            </template>
+        <template v-if="viewMode === 'list'">
+            <div class="tasks-view__list">
+                <template v-for="status in statuses" :key="status.id">
+                    <TaskGroup
+                        v-if="shouldShowGroup(status.id)"
+                        :status="status"
+                        :tasks="getTasksForStatus(status.id)"
+                        :is-done-status="status.isDone"
+                        :start-collapsed="isGroupCollapsed(status.id)"
+                        @toggle-task="handleToggleTask"
+                        @edit-task="openEditTask"
+                        @delete-task="handleDeleteTask"
+                        @edit-status="openEditStatus"
+                        @add-task="openNewTask"
+                        @task-dropped="handleTaskDropped"
+                    />
+                </template>
 
-            <button class="tasks-view__new-status" @click="openNewStatus">
-                <q-icon name="add" size="16px" />
-                Novo status
-            </button>
-        </div>
+                <button class="tasks-view__new-status" @click="openNewStatus">
+                    <q-icon name="add" size="16px" />
+                    Novo status
+                </button>
+            </div>
+        </template>
+
+        <template v-else>
+            <KanbanBoard
+                :statuses="statuses"
+                :done-status-ids="doneStatusIds"
+                :get-tasks-for-status="getTasksForStatus"
+                @toggle-task="handleToggleTask"
+                @edit-task="openEditTask"
+                @delete-task="handleDeleteTask"
+                @edit-status="openEditStatus"
+                @add-task="openNewTask"
+                @add-status="openNewStatus"
+                @task-dropped="handleTaskDropped"
+            />
+        </template>
 
         <TaskModal
             v-model="taskModalOpen"
@@ -267,6 +347,45 @@ defineExpose({ openNewTask })
         border-radius: 5px;
         padding: 1px 6px;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+
+    &__toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__view-toggle {
+        display: flex;
+        align-items: center;
+        background: #f0f1f3;
+        border-radius: 9px;
+        padding: 3px;
+        gap: 2px;
+    }
+
+    &__view-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 28px;
+        border-radius: 6px;
+        border: none;
+        background: none;
+        color: #9aa3af;
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+
+        &:hover {
+            color: #374151;
+        }
+
+        &--active {
+            background: #ffffff;
+            color: #141414;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
     }
 
     &__expand-btn {

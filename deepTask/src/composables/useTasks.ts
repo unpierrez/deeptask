@@ -65,6 +65,23 @@ export function useTasks() {
         tasks.value = tasks.value.filter((t) => t.id !== id)
     }
 
+    async function reorderTasks(items: { id: string; statusId: string; position: number }[]) {
+        // Optimistic update — apply locally before the server responds
+        items.forEach(({ id, statusId, position }) => {
+            const task = tasks.value.find((t) => t.id === id)
+            if (task) {
+                task.statusId = statusId
+                task.position = position
+            }
+        })
+        try {
+            await apiPatch('tasks/reorder', { items }, getToken() ?? undefined)
+        } catch {
+            // Rollback on failure by refetching the server state
+            await fetchTasks()
+        }
+    }
+
     function getTasksByStatus(statusId: string, doneStatusIds: Set<string>) {
         return computed(() => {
             let list = tasks.value.filter((t) => t.statusId === statusId)
@@ -102,6 +119,7 @@ export function useTasks() {
         completeTask,
         reopenTask,
         deleteTask,
+        reorderTasks,
         getTasksByStatus,
     }
 }
