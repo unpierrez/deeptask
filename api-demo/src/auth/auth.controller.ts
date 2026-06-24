@@ -3,6 +3,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { SignUpDTO } from './dtos/signup.dto';
 import { SignInDTO } from './dtos/signin.dto';
+import { GoogleSignInDTO } from './dtos/google-signin.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -26,6 +27,12 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     signin(@Body() body: SignInDTO) {
         return this.authService.signin(body);
+    }
+
+    @Post('google')
+    @HttpCode(HttpStatus.OK)
+    googleSignin(@Body() body: GoogleSignInDTO) {
+        return this.authService.googleSignin(body.credential);
     }
 
     @Get('me')

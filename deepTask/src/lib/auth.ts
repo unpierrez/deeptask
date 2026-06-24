@@ -76,6 +76,14 @@ export function logout() {
     persistAuthState(null)
 }
 
+export async function loginWithGoogle(credential: string) {
+    const data = await apiPost<{ accessToken: string; refreshToken: string }>(
+        'auth/google',
+        { credential },
+    )
+    persistAuthState({ accessToken: data.accessToken, refreshToken: data.refreshToken, user: null })
+}
+
 async function refreshTokens(): Promise<string | null> {
     if (!authState?.refreshToken) return null
 

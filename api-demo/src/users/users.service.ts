@@ -59,7 +59,15 @@ export class UsersService {
         return this.formatPreferences(prefs);
     }
 
-    async create(data: { name: string; email: string; passwordHash: string }) {
+    async findByGoogleId(googleId: string) {
+        return this.prisma.user.findUnique({ where: { googleId } });
+    }
+
+    async linkGoogleId(userId: string, googleId: string) {
+        return this.prisma.user.update({ where: { id: userId }, data: { googleId } });
+    }
+
+    async create(data: { name: string; email: string; passwordHash?: string; googleId?: string }) {
         return this.prisma.user.create({ data });
     }
 

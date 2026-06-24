@@ -1,0 +1,1 @@
+-- This migration was applied directly to the database. Recreated as placeholder to restore migration history.

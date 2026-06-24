@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { createHash } from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { SignUpDTO } from './dtos/signup.dto';
@@ -51,6 +52,37 @@ export class AuthService {
 
     async signout(userId: string) {
         await this.prisma.refreshToken.deleteMany({ where: { userId } });
+    }
+
+    async googleSignin(credential: string) {
+        let payload: { sub: string; email: string; name: string } | undefined;
+        try {
+            const clientId = this.config.getOrThrow<string>('GOOGLE_CLIENT_ID');
+            const client = new OAuth2Client(clientId);
+            const ticket = await client.verifyIdToken({ idToken: credential, audience: clientId });
+            const p = ticket.getPayload();
+            if (!p?.sub || !p?.email) throw new Error('Missing sub or email in token payload');
+            payload = { sub: p.sub, email: p.email, name: p.name ?? p.email };
+        } catch (err) {
+            console.error('[googleSignin] token verification failed:', err);
+            throw new UnauthorizedException('Token do Google inválido');
+        }
+
+        const { sub: googleId, email, name } = payload;
+
+        let user = await this.usersService.findByGoogleId(googleId);
+
+        if (!user) {
+            const existing = await this.usersService.findByEmail(email);
+            if (existing) {
+                user = await this.usersService.linkGoogleId(existing.id, googleId);
+            } else {
+                user = await this.usersService.create({ name, email, googleId });
+                await this.usersService.ensurePreferences(user.id);
+            }
+        }
+
+        return this.issueTokens(user.id, user.email);
     }
 
     private async issueTokens(userId: string, email: string) {

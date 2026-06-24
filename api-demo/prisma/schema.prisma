@@ -12,6 +12,7 @@ model User {
   name          String
   email         String           @unique
   passwordHash  String?
+  googleId      String?          @unique
   avatarColor   String           @default("#c2864f")
   accountType   String           @default("Conta pessoal")
   createdAt     DateTime         @default(now())

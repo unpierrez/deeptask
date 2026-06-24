@@ -114,6 +114,9 @@ const {
       {{ t('login.noAccount') }}
       <RouterLink to="/register" class="link-accent">{{ t('login.createAccount') }}</RouterLink>
     </p>
+
+    <!-- Hidden container for GIS renderButton (fallback for FedCM-unavailable environments) -->
+    <div id="g-signin-hidden" aria-hidden="true" style="position:fixed;top:0;left:0;opacity:0;pointer-events:none;z-index:-999;width:220px;height:44px;overflow:visible;"></div>
   </div>
 </template>
 
