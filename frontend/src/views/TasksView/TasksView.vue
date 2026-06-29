@@ -13,6 +13,15 @@ const { tasks, filter, searchQuery, fetchTasks, createTask, updateTask, complete
 const { statuses, fetchStatuses, createStatus, updateStatus, deleteStatus } = useStatuses()
 const { viewMode, setViewMode } = useViewPreference()
 
+// Separate visual state from filter state so the button repaints immediately
+// before the list re-render runs in the next task
+const activeFilter = ref<TaskFilter>(filter.value)
+
+function setFilter(value: TaskFilter) {
+    activeFilter.value = value
+    setTimeout(() => { filter.value = value }, 0)
+}
+
 const taskModalOpen = ref(false)
 const statusModalOpen = ref(false)
 const editingTask = ref<Task | null>(null)
@@ -194,8 +203,8 @@ defineExpose({ openNewTask })
                     v-for="f in filters"
                     :key="f.value"
                     class="tasks-view__filter-btn"
-                    :class="{ 'tasks-view__filter-btn--active': filter === f.value }"
-                    @click="filter = f.value"
+                    :class="{ 'tasks-view__filter-btn--active': activeFilter === f.value }"
+                    @click="setFilter(f.value)"
                 >
                     {{ f.label }}
                     <span class="tasks-view__filter-count">{{ filterCounts[f.value] }}</span>
@@ -311,29 +320,28 @@ defineExpose({ openNewTask })
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 7px 14px;
+        padding: 6px 14px;
         border-radius: 8px;
         border: 1.5px solid transparent;
         background: none;
         font-size: 0.875rem;
         font-weight: 500;
-        color: #6b7280;
+        color: #9aa3af;
         cursor: pointer;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        transition: all 0.12s;
 
         &:hover {
-            background: #f0f1f3;
             color: #374151;
         }
 
         &--active {
-            background: #141414;
-            color: #ffffff;
+            border-width: 2px;
             border-color: #141414;
+            color: #141414;
+            font-weight: 600;
 
             .tasks-view__filter-count {
-                background: rgba(255, 255, 255, 0.2);
+                background: #141414;
                 color: #ffffff;
             }
         }
@@ -342,7 +350,7 @@ defineExpose({ openNewTask })
     &__filter-count {
         font-size: 0.75rem;
         font-weight: 600;
-        background: #f0f1f3;
+        background: #e9eaec;
         color: #9aa3af;
         border-radius: 5px;
         padding: 1px 6px;
