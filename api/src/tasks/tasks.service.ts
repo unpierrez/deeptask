@@ -56,6 +56,7 @@ export class TasksService {
                 userId,
                 statusId: dto.statusId,
                 title: dto.title,
+                description: dto.description ?? null,
                 priority: dto.priority ?? 'media',
                 dueDate: dto.dueDate ?? null,
                 position: 0,
@@ -77,6 +78,7 @@ export class TasksService {
         if (dto.statusId !== undefined) data['statusId'] = dto.statusId;
         if (dto.priority !== undefined) data['priority'] = dto.priority;
         if ('dueDate' in dto) data['dueDate'] = dto.dueDate ?? null;
+        if ('description' in dto) data['description'] = dto.description ?? null;
 
         if (dto.tags !== undefined) {
             await this.prisma.taskTag.deleteMany({ where: { taskId: id } });
@@ -169,6 +171,7 @@ export class TasksService {
     private formatTask(task: {
         id: string;
         title: string;
+        description: string | null;
         statusId: string;
         prevStatusId: string | null;
         priority: string;
@@ -182,6 +185,7 @@ export class TasksService {
         return {
             id: task.id,
             title: task.title,
+            description: task.description,
             statusId: task.statusId,
             prevStatusId: task.prevStatusId,
             priority: task.priority,

@@ -57,6 +57,7 @@ model Task {
   prevStatusId  String?
   prevStatus    Status?        @relation("TaskPrevStatus", fields: [prevStatusId], references: [id])
   title         String
+  description   String?
   priority      String         @default("media")
   dueDate       String?
   position      Int            @default(0)

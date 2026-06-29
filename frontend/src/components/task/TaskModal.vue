@@ -17,11 +17,13 @@ const emit = defineEmits<{
         priority: string
         tags: string[]
         dueDate: string | null
+        description: string | null
     }]
     delete: [task: Task]
 }>()
 
 const title = ref('')
+const description = ref('')
 const statusId = ref('')
 const priority = ref('media')
 const tagsInput = ref('')
@@ -33,12 +35,14 @@ watch(() => props.modelValue, (open) => {
     if (!open) return
     if (props.task) {
         title.value = props.task.title
+        description.value = props.task.description ?? ''
         statusId.value = props.task.statusId
         priority.value = props.task.priority
         tagsInput.value = props.task.tags.join(', ')
         dueDate.value = props.task.dueDate ?? ''
     } else {
         title.value = ''
+        description.value = ''
         statusId.value = props.defaultStatusId ?? props.statuses[0]?.id ?? ''
         priority.value = 'media'
         tagsInput.value = ''
@@ -70,6 +74,7 @@ function handleSave() {
         priority: priority.value,
         tags,
         dueDate: dueDate.value.trim() || null,
+        description: description.value.trim() || null,
     })
 
     close()
@@ -102,6 +107,16 @@ function handleDelete() {
                         placeholder="Nome da tarefa"
                         @keydown.enter="handleSave"
                         autofocus
+                    />
+                </div>
+
+                <div class="task-modal__field">
+                    <label class="task-modal__label">Descrição</label>
+                    <textarea
+                        v-model="description"
+                        class="task-modal__input task-modal__input--textarea"
+                        placeholder="Detalhes, contexto, notas..."
+                        rows="3"
                     />
                 </div>
 
@@ -278,6 +293,14 @@ function handleDelete() {
 
         &--date {
             cursor: pointer;
+        }
+
+        &--textarea {
+            height: auto;
+            padding: 10px 12px;
+            resize: vertical;
+            min-height: 72px;
+            line-height: 1.5;
         }
     }
 

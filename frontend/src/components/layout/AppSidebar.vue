@@ -65,11 +65,7 @@ function handleLogout() {
     <aside class="sidebar">
         <div class="sidebar__brand">
             <div class="sidebar__logo">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <path d="M14 2L24 8V20L14 26L4 20V8L14 2Z" fill="white" fill-opacity="0.15" stroke="white"
-                        stroke-width="1.5" />
-                    <path d="M14 7L20 10.5V17.5L14 21L8 17.5V10.5L14 7Z" fill="white" fill-opacity="0.3" />
-                </svg>
+                <img src="/favicon.svg" width="32" height="32" alt="DeepTask" />
             </div>
             <span class="sidebar__wordmark">DeepTask</span>
         </div>

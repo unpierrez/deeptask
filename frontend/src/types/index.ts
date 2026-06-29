@@ -40,6 +40,7 @@ export interface Task {
     statusId: string
     prevStatusId: string | null
     title: string
+    description: string | null
     priority: Priority
     tags: string[]
     dueDate: string | null

@@ -78,6 +78,8 @@ function formatDate(date: string | null) {
             <span class="kanban-card__title">{{ task.title }}</span>
         </button>
 
+        <p v-if="task.description" class="kanban-card__description">{{ task.description }}</p>
+
         <div v-if="task.tags.length" class="kanban-card__tags">
             <span v-for="tag in task.tags" :key="tag" class="kanban-card__tag">{{ tag }}</span>
         </div>
@@ -173,6 +175,18 @@ function formatDate(date: string | null) {
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
         line-height: 1.5;
         display: block;
+    }
+
+    &__description {
+        font-size: 0.8rem;
+        color: #9aa3af;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        line-height: 1.45;
+        margin: -4px 0 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     &__tags {

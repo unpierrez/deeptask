@@ -53,6 +53,7 @@ function formatDate(date: string | null) {
 
         <div class="task-row__body">
             <span class="task-row__title">{{ task.title }}</span>
+            <p v-if="task.description" class="task-row__description">{{ task.description }}</p>
             <div v-if="task.tags.length" class="task-row__tags">
                 <span v-for="tag in task.tags" :key="tag" class="task-row__tag">{{ tag }}</span>
             </div>
@@ -180,6 +181,16 @@ function formatDate(date: string | null) {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    &__description {
+        font-size: 0.8rem;
+        color: #9aa3af;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
     }
 
     &__tags {

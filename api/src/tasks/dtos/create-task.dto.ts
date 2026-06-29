@@ -20,4 +20,8 @@ export class CreateTaskDTO {
     @IsOptional()
     @IsString()
     dueDate?: string;
+
+    @IsOptional()
+    @IsString()
+    description?: string;
 }

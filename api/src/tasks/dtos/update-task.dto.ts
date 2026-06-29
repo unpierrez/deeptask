@@ -22,4 +22,8 @@ export class UpdateTaskDTO {
     @IsOptional()
     @IsString()
     dueDate?: string | null;
+
+    @IsOptional()
+    @IsString()
+    description?: string | null;
 }

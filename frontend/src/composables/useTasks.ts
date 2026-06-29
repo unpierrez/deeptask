@@ -24,6 +24,7 @@ export function useTasks() {
         priority?: string
         tags?: string[]
         dueDate?: string
+        description?: string | null
     }) {
         const created = await apiPost<Task>('tasks', data, getToken() ?? undefined)
         tasks.value.unshift(created)
@@ -38,6 +39,7 @@ export function useTasks() {
             priority?: string
             tags?: string[]
             dueDate?: string | null
+            description?: string | null
         },
     ) {
         const updated = await apiPatch<Task>(`tasks/${id}`, data, getToken() ?? undefined)
