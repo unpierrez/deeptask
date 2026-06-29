@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import type { Task, Status } from '../../types'
 
 const props = defineProps<{
@@ -80,6 +80,11 @@ function handleSave() {
     close()
 }
 
+const isMobile = ref(false)
+onMounted(() => {
+    isMobile.value = window.innerWidth <= 768
+})
+
 function handleDelete() {
     if (props.task) {
         emit('delete', props.task)
@@ -89,7 +94,7 @@ function handleDelete() {
 </script>
 
 <template>
-    <q-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" persistent>
+    <q-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" :position="isMobile ? 'bottom' : 'standard'" persistent>
         <div class="task-modal">
             <div class="task-modal__header">
                 <h2 class="task-modal__title">{{ isEdit ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
@@ -204,6 +209,12 @@ function handleDelete() {
     border-radius: 16px;
     overflow: hidden;
 
+    @media (max-width: 768px) {
+        width: 100vw;
+        max-width: 100vw;
+        border-radius: 20px 20px 0 0;
+    }
+
     &__header {
         display: flex;
         align-items: center;
@@ -243,12 +254,24 @@ function handleDelete() {
         display: flex;
         flex-direction: column;
         gap: 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+
+        @media (max-width: 768px) {
+            padding: 16px 20px;
+            max-height: 65vh;
+        }
     }
 
     &__row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     &__field {

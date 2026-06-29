@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppSidebar from '../components/layout/AppSidebar.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
@@ -16,6 +16,7 @@ if (!isAuthenticated()) {
 }
 
 const user = ref<User | null>(null)
+const sidebarOpen = ref(false)
 const { tasks, searchQuery } = useTasks()
 const { statuses } = useStatuses()
 const { unreadCount, fetchNotifications } = useNotifications()
@@ -23,6 +24,7 @@ const { unreadCount, fetchNotifications } = useNotifications()
 const tasksViewRef = ref<{ openNewTask: (statusId?: string) => void } | null>(null)
 
 function handleNewTask() {
+    sidebarOpen.value = false
     if (router.currentRoute.value.path !== '/dashboard/tasks') {
         router.push('/dashboard/tasks')
     }
@@ -42,10 +44,20 @@ onMounted(async () => {
 
 <template>
     <div class="dashboard-layout">
+        <Transition name="backdrop">
+            <div
+                v-if="sidebarOpen"
+                class="mobile-backdrop"
+                @click="sidebarOpen = false"
+            />
+        </Transition>
+
         <AppSidebar
             :user="user"
             :tasks="tasks"
             :statuses="statuses"
+            :mobile-open="sidebarOpen"
+            @close="sidebarOpen = false"
         />
 
         <div class="dashboard-content">
@@ -53,6 +65,7 @@ onMounted(async () => {
                 v-model:search="searchQuery"
                 :unread-count="unreadCount"
                 @new-task="handleNewTask"
+                @toggle-menu="sidebarOpen = !sidebarOpen"
             />
 
             <main class="dashboard-main">
@@ -81,5 +94,22 @@ onMounted(async () => {
 .dashboard-main {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobile-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99;
+}
+
+.backdrop-enter-active,
+.backdrop-leave-active {
+    transition: opacity 0.2s;
+}
+.backdrop-enter-from,
+.backdrop-leave-to {
+    opacity: 0;
 }
 </style>

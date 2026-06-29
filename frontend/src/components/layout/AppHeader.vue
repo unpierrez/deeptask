@@ -7,7 +7,10 @@ defineProps<{
     unreadCount: number
 }>()
 
-const emit = defineEmits<{ newTask: [] }>()
+const emit = defineEmits<{
+    newTask: []
+    toggleMenu: []
+}>()
 
 const route = useRoute()
 
@@ -40,6 +43,10 @@ function todayLabel() {
 
 <template>
     <header class="app-header">
+        <button class="app-header__hamburger" @click="emit('toggleMenu')" aria-label="Menu">
+            <q-icon name="menu" size="22px" />
+        </button>
+
         <div class="app-header__titles">
             <h1 class="app-header__title">{{ screenConfig.title }}</h1>
             <p class="app-header__subtitle">{{ screenConfig.subtitle }}</p>
@@ -60,7 +67,7 @@ function todayLabel() {
 
             <button class="app-header__new-btn" @click="emit('newTask')">
                 <q-icon name="add" size="18px" />
-                <span>Nova tarefa</span>
+                <span class="app-header__new-label">Nova tarefa</span>
             </button>
         </div>
     </header>
@@ -68,8 +75,8 @@ function todayLabel() {
 
 <style scoped lang="scss">
 .app-header {
-    height: 68px;
-    min-height: 68px;
+    height: 64px;
+    min-height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -78,10 +85,28 @@ function todayLabel() {
     border-bottom: 1px solid #ebebec;
     gap: 16px;
 
+    &__hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: #374151;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        line-height: 1;
+
+        &:hover {
+            background: #f0f1f3;
+        }
+    }
+
     &__titles {
         display: flex;
         flex-direction: column;
         gap: 2px;
+        flex: 1;
+        min-width: 0;
     }
 
     &__title {
@@ -91,6 +116,9 @@ function todayLabel() {
         margin: 0;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
         line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__subtitle {
@@ -99,12 +127,16 @@ function todayLabel() {
         margin: 0;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
         text-transform: capitalize;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__actions {
         display: flex;
         align-items: center;
         gap: 10px;
+        flex-shrink: 0;
     }
 
     &__search {
@@ -157,6 +189,35 @@ function todayLabel() {
 
         &:hover {
             background: #2a2a2a;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        padding: 0 16px;
+        gap: 10px;
+
+        &__hamburger {
+            display: flex;
+        }
+
+        &__subtitle {
+            display: none;
+        }
+
+        &__search {
+            display: none;
+        }
+
+        &__new-btn {
+            width: 38px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        &__new-label {
+            display: none;
         }
     }
 }

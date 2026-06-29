@@ -222,8 +222,29 @@ const languages = [
     display: none;
   }
 
+  .auth-right {
+    margin-left: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 48px 32px;
+    justify-content: flex-start;
+    padding-top: 64px;
+  }
+
   .auth-right__mobile-logo {
     display: flex;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-right {
+    padding: 48px 20px;
+    padding-top: 56px;
+  }
+
+  .auth-right__content {
+    max-width: 100%;
   }
 }
 </style>

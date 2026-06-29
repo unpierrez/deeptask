@@ -148,6 +148,19 @@ const maxPriorityCount = computed(() => {
         grid-template-columns: 1fr 1fr;
         gap: 12px;
     }
+
+    @media (max-width: 768px) {
+        padding: 16px 12px;
+        gap: 12px;
+
+        &__kpis {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        &__charts {
+            grid-template-columns: 1fr;
+        }
+    }
 }
 
 .kpi-card {
@@ -196,6 +209,10 @@ const maxPriorityCount = computed(() => {
 
     &--tags {
         grid-column: 1 / -1;
+
+        @media (max-width: 768px) {
+            grid-column: auto;
+        }
     }
 
     &__title {

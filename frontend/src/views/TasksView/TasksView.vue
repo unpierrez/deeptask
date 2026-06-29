@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import TaskGroup from '../../components/task/TaskGroup.vue'
 import KanbanBoard from '../../components/task/KanbanBoard.vue'
 import TaskModal from '../../components/task/TaskModal.vue'
@@ -20,6 +20,16 @@ const activeFilter = ref<TaskFilter>(filter.value)
 function setFilter(value: TaskFilter) {
     activeFilter.value = value
     setTimeout(() => { filter.value = value }, 0)
+}
+
+// Force list view on mobile
+const isMobile = ref(false)
+
+function handleResize() {
+    isMobile.value = window.innerWidth <= 768
+    if (isMobile.value && viewMode.value === 'kanban') {
+        setViewMode('list')
+    }
 }
 
 const taskModalOpen = ref(false)
@@ -186,10 +196,16 @@ async function handleTaskDropped(payload: {
 }
 
 onMounted(async () => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
     await Promise.all([fetchStatuses(), fetchTasks()])
     statuses.value.forEach((s) => {
         groupStates.value[s.id] = s.isDone
     })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', handleResize)
 })
 
 defineExpose({ openNewTask })
@@ -211,7 +227,7 @@ defineExpose({ openNewTask })
                 </button>
             </div>
 
-            <div class="tasks-view__toolbar-right">
+            <div v-if="!isMobile" class="tasks-view__toolbar-right">
                 <div class="tasks-view__view-toggle">
                     <button
                         class="tasks-view__view-btn"
@@ -236,9 +252,15 @@ defineExpose({ openNewTask })
                     {{ expandLabel }}
                 </button>
             </div>
+
+            <div v-else class="tasks-view__toolbar-right">
+                <button class="tasks-view__expand-btn" @click="toggleAll">
+                    <q-icon :name="allExpanded ? 'unfold_less' : 'unfold_more'" size="16px" />
+                </button>
+            </div>
         </div>
 
-        <template v-if="viewMode === 'list'">
+        <template v-if="viewMode === 'list' || isMobile">
             <div class="tasks-view__list">
                 <template v-for="status in statuses" :key="status.id">
                     <TaskGroup
@@ -443,6 +465,25 @@ defineExpose({ openNewTask })
             border-color: #9aa3af;
             color: #374151;
             background: #f9fafb;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .tasks-view {
+        padding: 16px 12px;
+        gap: 12px;
+
+        &__filter-btn {
+            padding: 5px 10px;
+            font-size: 0.8125rem;
+        }
+
+        &__expand-btn {
+            width: 36px;
+            padding: 0;
+            justify-content: center;
+            gap: 0;
         }
     }
 }

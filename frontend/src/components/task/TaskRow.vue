@@ -254,6 +254,31 @@ function formatDate(date: string | null) {
     }
 }
 
+@media (max-width: 768px) {
+    .task-row {
+        padding: 10px 12px;
+        gap: 8px;
+
+        &__drag-handle {
+            display: none;
+        }
+
+        &__priority {
+            span {
+                display: none;
+            }
+        }
+
+        &__due {
+            display: none;
+        }
+
+        &__meta {
+            gap: 8px;
+        }
+    }
+}
+
 :deep(.task-row__menu) {
     border-radius: 10px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);

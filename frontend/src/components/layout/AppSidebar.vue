@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { logout } from '../../lib/auth'
@@ -11,8 +11,10 @@ const props = defineProps<{
     user: User | null
     tasks: Task[]
     statuses: Status[]
+    mobileOpen?: boolean
 }>()
 
+const emit = defineEmits<{ close: [] }>()
 
 const router = useRouter()
 const route = useRoute()
@@ -43,6 +45,11 @@ function isActive(path: string) {
     return route.path.startsWith(path)
 }
 
+// Close sidebar on route change (mobile)
+watch(() => route.path, () => {
+    emit('close')
+})
+
 function handleSaveDefault() {
     saveAsDefault()
     const label = viewMode.value === 'kanban' ? 'Kanban' : 'Lista'
@@ -62,12 +69,15 @@ function handleLogout() {
 </script>
 
 <template>
-    <aside class="sidebar">
+    <aside class="sidebar" :class="{ 'sidebar--mobile-open': mobileOpen }">
         <div class="sidebar__brand">
             <div class="sidebar__logo">
                 <img src="/favicon.svg" width="32" height="32" alt="DeepTask" />
             </div>
             <span class="sidebar__wordmark">DeepTask</span>
+            <button class="sidebar__close-btn" @click="emit('close')">
+                <q-icon name="close" size="20px" />
+            </button>
         </div>
 
         <nav class="sidebar__nav">
@@ -163,6 +173,23 @@ function handleLogout() {
         color: #ffffff;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
         letter-spacing: -0.02em;
+        flex: 1;
+    }
+
+    &__close-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        line-height: 1;
+
+        &:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
     }
 
     &__nav {
@@ -326,6 +353,28 @@ function handleLogout() {
         &:hover {
             color: rgba(255, 255, 255, 0.8);
             background: rgba(255, 255, 255, 0.08);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        min-width: 0;
+        width: 272px;
+
+        &--mobile-open {
+            transform: translateX(0);
+        }
+
+        &__close-btn {
+            display: flex;
         }
     }
 }
