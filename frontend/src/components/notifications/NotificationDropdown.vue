@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useNotifications } from '../../composables/useNotifications'
 import type { NotificationType } from '../../types'
 
 defineProps<{ unreadCount: number }>()
 
+const { t } = useI18n()
 const { notifications, markAllRead, markRead } = useNotifications()
 const open = ref(false)
 
@@ -18,13 +20,13 @@ const iconMap: Record<NotificationType, { icon: string; color: string }> = {
 function relativeTime(iso: string) {
     const diff = Date.now() - new Date(iso).getTime()
     const mins = Math.floor(diff / 60000)
-    if (mins < 1) return 'Agora'
-    if (mins < 60) return `Há ${mins} min`
+    if (mins < 1) return t('notifications.now')
+    if (mins < 60) return t('notifications.mins', { mins })
     const hours = Math.floor(mins / 60)
-    if (hours < 24) return `Há ${hours}h`
+    if (hours < 24) return t('notifications.hours', { hours })
     const days = Math.floor(hours / 24)
-    if (days === 1) return 'Ontem'
-    return `${days} dias atrás`
+    if (days === 1) return t('notifications.yesterday')
+    return t('notifications.days', { days })
 }
 
 async function handleMarkRead(id: string, isRead: boolean) {
@@ -50,9 +52,9 @@ function close() {
         <Transition name="dropdown">
             <div v-if="open" class="notif__dropdown">
                 <div class="notif__header">
-                    <span class="notif__header-title">Notificações</span>
+                    <span class="notif__header-title">{{ t('notifications.title') }}</span>
                     <button v-if="unreadCount > 0" class="notif__mark-all" @click="markAllRead">
-                        Marcar todas
+                        {{ t('notifications.markAll') }}
                     </button>
                 </div>
 
@@ -75,7 +77,7 @@ function close() {
                     </div>
 
                     <div v-if="notifications.length === 0" class="notif__empty">
-                        Nenhuma notificação
+                        {{ t('notifications.empty') }}
                     </div>
                 </div>
             </div>

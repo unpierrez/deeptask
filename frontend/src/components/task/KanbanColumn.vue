@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import KanbanCard from './KanbanCard.vue'
 import { useDragDrop } from '../../composables/useDragDrop'
 import type { Status, Task } from '../../types'
@@ -19,6 +20,7 @@ const emit = defineEmits<{
     taskDropped: [payload: { taskId: string; targetStatusId: string; insertBeforeTaskId: string | null }]
 }>()
 
+const { t } = useI18n()
 const { draggingTask, endDrag } = useDragDrop()
 
 const isDragOver = ref(false)
@@ -84,10 +86,10 @@ function onDrop(e: DragEvent) {
                 <span class="kanban-col__count">{{ tasks.length }}</span>
             </div>
             <div class="kanban-col__actions">
-                <button class="kanban-col__action-btn" @click="emit('editStatus', status)" title="Editar status">
+                <button class="kanban-col__action-btn" @click="emit('editStatus', status)" :title="t('common.edit') + ' status'">
                     <q-icon name="edit" size="14px" />
                 </button>
-                <button class="kanban-col__action-btn" @click="emit('addTask', status.id)" title="Nova tarefa">
+                <button class="kanban-col__action-btn" @click="emit('addTask', status.id)" :title="t('common.newTask')">
                     <q-icon name="add" size="16px" />
                 </button>
             </div>
@@ -116,13 +118,13 @@ function onDrop(e: DragEvent) {
 
             <div v-else class="kanban-col__empty">
                 <q-icon name="inbox" size="22px" class="kanban-col__empty-icon" />
-                <span>Nenhuma tarefa</span>
+                <span>{{ t('common.noTasks') }}</span>
             </div>
         </div>
 
         <button class="kanban-col__add-btn" @click="emit('addTask', status.id)">
             <q-icon name="add" size="15px" />
-            <span>Adicionar tarefa</span>
+            <span>{{ t('common.addTask') }}</span>
         </button>
     </div>
 </template>

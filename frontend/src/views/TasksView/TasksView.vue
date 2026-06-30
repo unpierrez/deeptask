@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import TaskGroup from '../../components/task/TaskGroup.vue'
 import KanbanBoard from '../../components/task/KanbanBoard.vue'
 import TaskModal from '../../components/task/TaskModal.vue'
@@ -12,6 +13,7 @@ import type { Task, Status, TaskFilter } from '../../types'
 const { tasks, filter, searchQuery, fetchTasks, createTask, updateTask, completeTask, reopenTask, deleteTask, reorderTasks } = useTasks()
 const { statuses, fetchStatuses, createStatus, updateStatus, deleteStatus } = useStatuses()
 const { viewMode, setViewMode } = useViewPreference()
+const { t } = useI18n()
 
 // Separate visual state from filter state so the button repaints immediately
 // before the list re-render runs in the next task
@@ -40,11 +42,11 @@ const defaultStatusId = ref<string | undefined>()
 
 const doneStatusIds = computed(() => new Set(statuses.value.filter((s) => s.isDone).map((s) => s.id)))
 
-const filters: { label: string; value: TaskFilter }[] = [
-    { label: 'Todas', value: 'all' },
-    { label: 'Em aberto', value: 'active' },
-    { label: 'Concluídas', value: 'done' },
-]
+const filters = computed<{ label: string; value: TaskFilter }[]>(() => [
+    { label: t('tasks.filterAll'), value: 'all' },
+    { label: t('tasks.filterActive'), value: 'active' },
+    { label: t('tasks.filterDone'), value: 'done' },
+])
 
 const filterCounts = computed(() => ({
     all: tasks.value.length,
@@ -66,7 +68,7 @@ function toggleAll() {
 }
 
 const expandLabel = computed(() =>
-    allExpanded.value ? 'Recolher tudo' : 'Expandir tudo',
+    allExpanded.value ? t('tasks.collapseAll') : t('tasks.expandAll'),
 )
 
 function getTasksForStatus(statusId: string) {
@@ -232,7 +234,7 @@ defineExpose({ openNewTask })
                     <button
                         class="tasks-view__view-btn"
                         :class="{ 'tasks-view__view-btn--active': viewMode === 'list' }"
-                        title="Visualização em lista"
+                        :title="t('tasks.viewList')"
                         @click="setViewMode('list')"
                     >
                         <q-icon name="view_list" size="18px" />
@@ -240,7 +242,7 @@ defineExpose({ openNewTask })
                     <button
                         class="tasks-view__view-btn"
                         :class="{ 'tasks-view__view-btn--active': viewMode === 'kanban' }"
-                        title="Visualização kanban"
+                        :title="t('tasks.viewKanban')"
                         @click="setViewMode('kanban')"
                     >
                         <q-icon name="grid_view" size="16px" />
@@ -280,7 +282,7 @@ defineExpose({ openNewTask })
 
                 <button class="tasks-view__new-status" @click="openNewStatus">
                     <q-icon name="add" size="16px" />
-                    Novo status
+                    {{ t('common.newStatus') }}
                 </button>
             </div>
         </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Task } from '../../types'
 import { useDragDrop } from '../../composables/useDragDrop'
 
@@ -13,19 +15,19 @@ const emit = defineEmits<{
     delete: [task: Task]
 }>()
 
+const { t, locale } = useI18n()
 const { draggingTask, startDrag, endDrag } = useDragDrop()
 
-const priorityConfig = {
-    alta: { label: 'Alta', color: '#dd5a4b', bg: '#fff1f0' },
-    media: { label: 'Média', color: '#d99a2b', bg: '#fffbeb' },
-    baixa: { label: 'Baixa', color: '#6b9bd1', bg: '#eff6ff' },
-}
+const priorityConfig = computed(() => ({
+    alta: { label: t('priorities.alta'), color: '#dd5a4b', bg: '#fff1f0' },
+    media: { label: t('priorities.media'), color: '#d99a2b', bg: '#fffbeb' },
+    baixa: { label: t('priorities.baixa'), color: '#6b9bd1', bg: '#eff6ff' },
+}))
 
 function formatDate(date: string | null) {
     if (!date) return null
-    const [, m, d] = date.split('-').map(Number)
-    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-    return `${d} ${months[m - 1]}`
+    const [y, m, d] = date.split('-').map(Number)
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short' }).format(new Date(y, m - 1, d))
 }
 </script>
 
@@ -56,18 +58,18 @@ function formatDate(date: string | null) {
                     <q-list dense>
                         <q-item clickable v-close-popup @click="emit('edit', task)">
                             <q-item-section avatar><q-icon name="edit" size="15px" /></q-item-section>
-                            <q-item-section>Editar</q-item-section>
+                            <q-item-section>{{ t('common.edit') }}</q-item-section>
                         </q-item>
                         <q-item clickable v-close-popup @click="emit('toggle', task)">
                             <q-item-section avatar>
                                 <q-icon :name="isDone ? 'refresh' : 'check_circle'" size="15px" />
                             </q-item-section>
-                            <q-item-section>{{ isDone ? 'Reabrir' : 'Concluir' }}</q-item-section>
+                            <q-item-section>{{ isDone ? t('common.reopen') : t('common.complete') }}</q-item-section>
                         </q-item>
                         <q-separator />
                         <q-item clickable v-close-popup @click="emit('delete', task)" class="kanban-card-menu__delete">
                             <q-item-section avatar><q-icon name="delete" size="15px" /></q-item-section>
-                            <q-item-section>Excluir</q-item-section>
+                            <q-item-section>{{ t('common.delete') }}</q-item-section>
                         </q-item>
                     </q-list>
                 </q-menu>

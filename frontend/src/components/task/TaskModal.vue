@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Task, Status } from '../../types'
 
 const props = defineProps<{
@@ -29,6 +30,7 @@ const priority = ref('media')
 const tagsInput = ref('')
 const dueDate = ref('')
 
+const { t } = useI18n()
 const isEdit = computed(() => Boolean(props.task))
 
 watch(() => props.modelValue, (open) => {
@@ -50,11 +52,11 @@ watch(() => props.modelValue, (open) => {
     }
 })
 
-const priorities = [
-    { value: 'alta', label: 'Alta', color: '#dd5a4b' },
-    { value: 'media', label: 'Média', color: '#d99a2b' },
-    { value: 'baixa', label: 'Baixa', color: '#6b9bd1' },
-]
+const priorities = computed(() => [
+    { value: 'alta', label: t('priorities.alta'), color: '#dd5a4b' },
+    { value: 'media', label: t('priorities.media'), color: '#d99a2b' },
+    { value: 'baixa', label: t('priorities.baixa'), color: '#6b9bd1' },
+])
 
 function close() {
     emit('update:modelValue', false)
@@ -97,7 +99,7 @@ function handleDelete() {
     <q-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" :position="isMobile ? 'bottom' : 'standard'" persistent>
         <div class="task-modal">
             <div class="task-modal__header">
-                <h2 class="task-modal__title">{{ isEdit ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
+                <h2 class="task-modal__title">{{ isEdit ? t('taskModal.titleEdit') : t('taskModal.titleNew') }}</h2>
                 <button class="task-modal__close" @click="close">
                     <q-icon name="close" size="18px" />
                 </button>
@@ -105,28 +107,28 @@ function handleDelete() {
 
             <div class="task-modal__body">
                 <div class="task-modal__field">
-                    <label class="task-modal__label">Título *</label>
+                    <label class="task-modal__label">{{ t('taskModal.labelTitle') }}</label>
                     <input
                         v-model="title"
                         class="task-modal__input"
-                        placeholder="Nome da tarefa"
+                        :placeholder="t('taskModal.placeholderTitle')"
                         @keydown.enter="handleSave"
                         autofocus
                     />
                 </div>
 
                 <div class="task-modal__field">
-                    <label class="task-modal__label">Descrição</label>
+                    <label class="task-modal__label">{{ t('taskModal.labelDescription') }}</label>
                     <textarea
                         v-model="description"
                         class="task-modal__input task-modal__input--textarea"
-                        placeholder="Detalhes, contexto, notas..."
+                        :placeholder="t('taskModal.placeholderDescription')"
                         rows="3"
                     />
                 </div>
 
                 <div class="task-modal__field">
-                    <label class="task-modal__label">Prioridade</label>
+                    <label class="task-modal__label">{{ t('taskModal.labelPriority') }}</label>
                     <div class="task-modal__priority-group">
                         <button
                             v-for="p in priorities"
@@ -143,7 +145,7 @@ function handleDelete() {
                 </div>
 
                 <div class="task-modal__field">
-                    <label class="task-modal__label">Status</label>
+                    <label class="task-modal__label">{{ t('taskModal.labelStatus') }}</label>
                     <div class="task-modal__status-group">
                         <button
                             v-for="s in statuses"
@@ -161,17 +163,17 @@ function handleDelete() {
 
                 <div class="task-modal__row">
                     <div class="task-modal__field">
-                        <label class="task-modal__label">Categorias</label>
+                        <label class="task-modal__label">{{ t('taskModal.labelTags') }}</label>
                         <input
                             v-model="tagsInput"
                             class="task-modal__input"
-                            placeholder="Saúde, Casa, Trabalho..."
+                            :placeholder="t('taskModal.placeholderTags')"
                         />
-                        <span class="task-modal__hint">Separe por vírgula</span>
+                        <span class="task-modal__hint">{{ t('taskModal.hintTags') }}</span>
                     </div>
 
                     <div class="task-modal__field">
-                        <label class="task-modal__label">Prazo</label>
+                        <label class="task-modal__label">{{ t('taskModal.labelDueDate') }}</label>
                         <input
                             v-model="dueDate"
                             type="date"
@@ -184,16 +186,16 @@ function handleDelete() {
             <div class="task-modal__footer">
                 <button v-if="isEdit" class="task-modal__delete-btn" @click="handleDelete">
                     <q-icon name="delete" size="16px" />
-                    Excluir
+                    {{ t('common.delete') }}
                 </button>
                 <div class="task-modal__footer-right">
-                    <button class="task-modal__cancel-btn" @click="close">Cancelar</button>
+                    <button class="task-modal__cancel-btn" @click="close">{{ t('common.cancel') }}</button>
                     <button
                         class="task-modal__save-btn"
                         :disabled="!title.trim()"
                         @click="handleSave"
                     >
-                        {{ isEdit ? 'Salvar' : 'Criar tarefa' }}
+                        {{ isEdit ? t('common.save') : t('taskModal.btnCreate') }}
                     </button>
                 </div>
             </div>

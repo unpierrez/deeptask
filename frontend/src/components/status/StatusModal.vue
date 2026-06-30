@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Status } from '../../types'
 
 const props = defineProps<{
@@ -29,6 +30,7 @@ const title = ref('')
 const color = ref(COLOR_PALETTE[0])
 const isDone = ref(false)
 
+const { t } = useI18n()
 const isEdit = computed(() => Boolean(props.status))
 
 watch(() => props.modelValue, (open) => {
@@ -66,7 +68,7 @@ function handleDelete() {
     <q-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" persistent>
         <div class="status-modal">
             <div class="status-modal__header">
-                <h2 class="status-modal__title">{{ isEdit ? 'Editar status' : 'Novo status' }}</h2>
+                <h2 class="status-modal__title">{{ isEdit ? t('statusModal.titleEdit') : t('statusModal.titleNew') }}</h2>
                 <button class="status-modal__close" @click="close">
                     <q-icon name="close" size="18px" />
                 </button>
@@ -74,18 +76,18 @@ function handleDelete() {
 
             <div class="status-modal__body">
                 <div class="status-modal__field">
-                    <label class="status-modal__label">Nome do status *</label>
+                    <label class="status-modal__label">{{ t('statusModal.labelName') }}</label>
                     <input
                         v-model="title"
                         class="status-modal__input"
-                        placeholder="Ex: Em Revisão"
+                        :placeholder="t('statusModal.placeholderName')"
                         @keydown.enter="handleSave"
                         autofocus
                     />
                 </div>
 
                 <div class="status-modal__field">
-                    <label class="status-modal__label">Cor</label>
+                    <label class="status-modal__label">{{ t('statusModal.labelColor') }}</label>
                     <div class="status-modal__colors">
                         <button
                             v-for="c in COLOR_PALETTE"
@@ -102,8 +104,8 @@ function handleDelete() {
 
                 <div class="status-modal__toggle-row">
                     <div>
-                        <p class="status-modal__toggle-label">Status de conclusão</p>
-                        <p class="status-modal__toggle-hint">Tarefas aqui contam como concluídas</p>
+                        <p class="status-modal__toggle-label">{{ t('statusModal.labelIsDone') }}</p>
+                        <p class="status-modal__toggle-hint">{{ t('statusModal.hintIsDone') }}</p>
                     </div>
                     <button
                         class="status-modal__toggle"
@@ -122,16 +124,16 @@ function handleDelete() {
                     @click="handleDelete"
                 >
                     <q-icon name="delete" size="16px" />
-                    Excluir
+                    {{ t('common.delete') }}
                 </button>
                 <div class="status-modal__footer-right">
-                    <button class="status-modal__cancel-btn" @click="close">Cancelar</button>
+                    <button class="status-modal__cancel-btn" @click="close">{{ t('common.cancel') }}</button>
                     <button
                         class="status-modal__save-btn"
                         :disabled="!title.trim()"
                         @click="handleSave"
                     >
-                        {{ isEdit ? 'Salvar' : 'Criar status' }}
+                        {{ isEdit ? t('common.save') : t('statusModal.btnCreate') }}
                     </button>
                 </div>
             </div>

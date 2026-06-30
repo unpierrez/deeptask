@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import { logout } from '../../lib/auth'
 import { useViewPreference } from '../../composables/useViewPreference'
 import type { User } from '../../types'
@@ -19,7 +20,10 @@ const emit = defineEmits<{ close: [] }>()
 const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
+const { t, locale } = useI18n()
 const { viewMode, saveAsDefault } = useViewPreference()
+
+const langs = [{ code: 'pt-BR', label: 'PT' }, { code: 'en', label: 'EN' }]
 
 const doneStatusIds = computed(() => new Set(props.statuses.filter((s) => s.isDone).map((s) => s.id)))
 const total = computed(() => props.tasks.length)
@@ -36,25 +40,24 @@ const initials = computed(() => {
         .join('')
 })
 
-const navItems = [
-    { name: 'tasks', label: 'Minhas Tarefas', icon: 'checklist', path: '/dashboard/tasks' },
-    { name: 'report', label: 'Relatório', icon: 'bar_chart', path: '/dashboard/report' },
-]
+const navItems = computed(() => [
+    { name: 'tasks', label: t('nav.tasks'), icon: 'checklist', path: '/dashboard/tasks' },
+    { name: 'report', label: t('nav.report'), icon: 'bar_chart', path: '/dashboard/report' },
+])
 
 function isActive(path: string) {
     return route.path.startsWith(path)
 }
 
-// Close sidebar on route change (mobile)
 watch(() => route.path, () => {
     emit('close')
 })
 
 function handleSaveDefault() {
     saveAsDefault()
-    const label = viewMode.value === 'kanban' ? 'Kanban' : 'Lista'
+    const mode = viewMode.value === 'kanban' ? 'Kanban' : locale.value === 'en' ? 'List' : 'Lista'
     $q.notify({
-        message: `Visualização padrão salva: ${label}`,
+        message: `${t('tasks.saveDefaultView')}: ${mode}`,
         icon: 'check_circle',
         color: 'dark',
         timeout: 2200,
@@ -81,7 +84,7 @@ function handleLogout() {
         </div>
 
         <nav class="sidebar__nav">
-            <p class="sidebar__nav-label">MENU</p>
+            <p class="sidebar__nav-label">{{ t('nav.menu') }}</p>
             <ul class="sidebar__nav-list">
                 <li v-for="item in navItems" :key="item.name">
                     <RouterLink :to="item.path" class="sidebar__nav-item" :class="{ 'sidebar__nav-item--active': isActive(item.path) }">
@@ -94,13 +97,13 @@ function handleLogout() {
 
         <div class="sidebar__progress">
             <div class="sidebar__progress-header">
-                <span class="sidebar__progress-title">Progresso de hoje</span>
+                <span class="sidebar__progress-title">{{ t('tasks.progressTitle') }}</span>
                 <span class="sidebar__progress-pct">{{ donePct }}%</span>
             </div>
             <div class="sidebar__progress-bar">
                 <div class="sidebar__progress-fill" :style="{ width: donePct + '%' }" />
             </div>
-            <p class="sidebar__progress-label">{{ doneCount }} de {{ total }} concluídas</p>
+            <p class="sidebar__progress-label">{{ t('tasks.progressLabel', { done: doneCount, total }) }}</p>
         </div>
 
         <div class="sidebar__footer">
@@ -120,8 +123,8 @@ function handleLogout() {
                                 <q-icon name="bookmark" size="16px" />
                             </q-item-section>
                             <q-item-section>
-                                <div class="sidebar-menu__item-label">Salvar visualização padrão</div>
-                                <div class="sidebar-menu__item-sub">{{ viewMode === 'kanban' ? 'Kanban' : 'Lista' }} atual</div>
+                                <div class="sidebar-menu__item-label">{{ t('tasks.saveDefaultView') }}</div>
+                                <div class="sidebar-menu__item-sub">{{ t('tasks.currentView', { mode: viewMode === 'kanban' ? 'Kanban' : (locale === 'en' ? 'List' : 'Lista') }) }}</div>
                             </q-item-section>
                         </q-item>
                         <q-separator class="sidebar-menu__sep" />
@@ -129,11 +132,25 @@ function handleLogout() {
                             <q-item-section avatar>
                                 <q-icon name="logout" size="16px" />
                             </q-item-section>
-                            <q-item-section>Sair</q-item-section>
+                            <q-item-section>{{ t('nav.logout') }}</q-item-section>
                         </q-item>
                     </q-list>
                 </q-menu>
             </button>
+        </div>
+
+        <div class="sidebar__lang-row">
+            <div class="sidebar__lang">
+                <button
+                    v-for="lang in langs"
+                    :key="lang.code"
+                    class="sidebar__lang-btn"
+                    :class="{ 'sidebar__lang-btn--active': locale === lang.code }"
+                    @click="locale = lang.code"
+                >
+                    {{ lang.label }}
+                </button>
+            </div>
         </div>
     </aside>
 </template>
@@ -286,6 +303,41 @@ function handleLogout() {
         color: rgba(255, 255, 255, 0.4);
         margin: 0;
         font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+
+    &__lang-row {
+        padding: 0 8px 4px;
+    }
+
+    &__lang {
+        display: inline-flex;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 3px;
+        gap: 2px;
+    }
+
+    &__lang-btn {
+        padding: 4px 10px;
+        border-radius: 7px;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 11px;
+        font-weight: 600;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        cursor: pointer;
+        letter-spacing: 0.03em;
+        transition: all 0.15s;
+
+        &:hover:not(&--active) {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        &--active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
     }
 
     &__footer {

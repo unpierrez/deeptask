@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useReport } from '../../composables/useReport'
 
 const { report, loading, fetchReport } = useReport()
+const { t } = useI18n()
 
 onMounted(fetchReport)
 
-const priorityConfig = {
-    alta: { label: 'Alta', color: '#dd5a4b' },
-    media: { label: 'Média', color: '#d99a2b' },
-    baixa: { label: 'Baixa', color: '#6b9bd1' },
-}
+const priorityConfig = computed(() => ({
+    alta: { label: t('priorities.alta'), color: '#dd5a4b' },
+    media: { label: t('priorities.media'), color: '#d99a2b' },
+    baixa: { label: t('priorities.baixa'), color: '#6b9bd1' },
+}))
 
 const maxStatusCount = computed(() => {
     if (!report.value?.byStatus.length) return 1
@@ -36,35 +38,42 @@ const maxPriorityCount = computed(() => {
                         <q-icon name="format_list_bulleted" size="18px" />
                     </div>
                     <span class="kpi-card__value">{{ report.kpis.total }}</span>
-                    <span class="kpi-card__label">Total de tarefas</span>
+                    <span class="kpi-card__label">{{ t('report.kpiTotal') }}</span>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-card__icon kpi-card__icon--green">
                         <q-icon name="check_circle" size="18px" />
                     </div>
                     <span class="kpi-card__value">{{ report.kpis.doneCount }}</span>
-                    <span class="kpi-card__label">Concluídas</span>
+                    <span class="kpi-card__label">{{ t('report.kpiDone') }}</span>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-card__icon kpi-card__icon--blue">
                         <q-icon name="pending" size="18px" />
                     </div>
                     <span class="kpi-card__value">{{ report.kpis.openCount }}</span>
-                    <span class="kpi-card__label">Em aberto</span>
+                    <span class="kpi-card__label">{{ t('report.kpiOpen') }}</span>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-card__icon kpi-card__icon--red">
                         <q-icon name="flag" size="18px" />
                     </div>
                     <span class="kpi-card__value">{{ report.kpis.highCount }}</span>
-                    <span class="kpi-card__label">Prioridade alta</span>
+                    <span class="kpi-card__label">{{ t('report.kpiHighPriority') }}</span>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-card__icon kpi-card__icon--purple">
+                        <q-icon name="today" size="18px" />
+                    </div>
+                    <span class="kpi-card__value">{{ report.kpis.doneToday }}</span>
+                    <span class="kpi-card__label">{{ t('report.kpiDoneToday') }}</span>
                 </div>
             </div>
 
             <div class="report-view__charts">
                 <div class="chart-card">
-                    <h3 class="chart-card__title">Tarefas por status</h3>
-                    <p class="chart-card__subtitle">Distribuição atual</p>
+                    <h3 class="chart-card__title">{{ t('report.statusTitle') }}</h3>
+                    <p class="chart-card__subtitle">{{ t('report.statusSubtitle') }}</p>
                     <div class="chart-card__bars">
                         <div v-for="s in report.byStatus" :key="s.id" class="chart-bar">
                             <div class="chart-bar__label-row">
@@ -86,8 +95,8 @@ const maxPriorityCount = computed(() => {
                 </div>
 
                 <div class="chart-card">
-                    <h3 class="chart-card__title">Tarefas por prioridade</h3>
-                    <p class="chart-card__subtitle">Onde está sua energia</p>
+                    <h3 class="chart-card__title">{{ t('report.priorityTitle') }}</h3>
+                    <p class="chart-card__subtitle">{{ t('report.prioritySubtitle') }}</p>
                     <div class="chart-card__bars">
                         <div v-for="p in report.byPriority" :key="p.priority" class="chart-bar">
                             <div class="chart-bar__label-row">
@@ -110,14 +119,14 @@ const maxPriorityCount = computed(() => {
             </div>
 
             <div class="chart-card chart-card--tags">
-                <h3 class="chart-card__title">Tarefas por categoria</h3>
-                <p class="chart-card__subtitle">Suas etiquetas mais usadas</p>
+                <h3 class="chart-card__title">{{ t('report.tagTitle') }}</h3>
+                <p class="chart-card__subtitle">{{ t('report.tagSubtitle') }}</p>
                 <div class="chart-card__tags">
                     <span v-for="t in report.byTag" :key="t.label" class="tag-chip">
                         {{ t.label }}
                         <span class="tag-chip__count">{{ t.count }}</span>
                     </span>
-                    <p v-if="!report.byTag.length" class="chart-card__empty">Nenhuma categoria cadastrada</p>
+                    <p v-if="!report.byTag.length" class="chart-card__empty">{{ t('report.tagEmpty') }}</p>
                 </div>
             </div>
         </template>
@@ -139,7 +148,7 @@ const maxPriorityCount = computed(() => {
 
     &__kpis {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 12px;
     }
 
@@ -184,6 +193,7 @@ const maxPriorityCount = computed(() => {
         &--green { background: #ecfdf5; color: #4f9d6f; }
         &--blue { background: #eff6ff; color: #4f7bd9; }
         &--red { background: #fff5f5; color: #dd5a4b; }
+        &--purple { background: #f3f0ff; color: #7c5cbf; }
     }
 
     &__value {

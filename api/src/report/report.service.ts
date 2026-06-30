@@ -16,12 +16,20 @@ export class ReportService {
 
         const doneStatusIds = new Set(statuses.filter((s) => s.isDone).map((s) => s.id));
 
+        const todayStart = new Date()
+        todayStart.setHours(0, 0, 0, 0)
+        const todayEnd = new Date()
+        todayEnd.setHours(23, 59, 59, 999)
+
         const total = tasks.length;
         const doneCount = tasks.filter((t) => doneStatusIds.has(t.statusId)).length;
         const openCount = total - doneCount;
         const donePct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
         const highCount = tasks.filter(
             (t) => !doneStatusIds.has(t.statusId) && t.priority === 'alta',
+        ).length;
+        const doneToday = tasks.filter(
+            (t) => t.completedAt !== null && t.completedAt >= todayStart && t.completedAt <= todayEnd,
         ).length;
 
         const byStatus = statuses.map((s) => ({
@@ -48,7 +56,7 @@ export class ReportService {
             .sort((a, b) => b.count - a.count);
 
         return {
-            kpis: { total, doneCount, openCount, donePct, highCount },
+            kpis: { total, doneCount, openCount, donePct, highCount, doneToday },
             byStatus,
             byPriority,
             byTag,

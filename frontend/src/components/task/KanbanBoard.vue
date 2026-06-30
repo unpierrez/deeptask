@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import KanbanColumn from './KanbanColumn.vue'
 import type { Status, Task } from '../../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
     statuses: Status[]
@@ -38,7 +41,7 @@ const emit = defineEmits<{
 
             <button class="kanban-board__new-col" @click="emit('addStatus')">
                 <q-icon name="add" size="18px" />
-                <span>Novo status</span>
+                <span>{{ t('common.newStatus') }}</span>
             </button>
         </div>
     </div>

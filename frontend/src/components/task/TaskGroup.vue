@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import TaskRow from './TaskRow.vue'
 import { useDragDrop } from '../../composables/useDragDrop'
 import type { Status, Task } from '../../types'
@@ -22,6 +23,7 @@ const emit = defineEmits<{
 
 const collapsed = ref(props.startCollapsed ?? false)
 
+const { t } = useI18n()
 const { draggingTask, endDrag } = useDragDrop()
 
 const isDragOver = ref(false)
@@ -100,10 +102,10 @@ function onDrop(e: DragEvent) {
                 <span class="task-group__count">{{ tasks.length }}</span>
             </div>
             <div class="task-group__header-actions" @click.stop>
-                <button class="task-group__action-btn" @click="emit('editStatus', status)" title="Editar status">
+                <button class="task-group__action-btn" @click="emit('editStatus', status)" :title="t('common.edit') + ' status'">
                     <q-icon name="edit" size="15px" />
                 </button>
-                <button class="task-group__action-btn" @click="emit('addTask', status.id)" title="Nova tarefa">
+                <button class="task-group__action-btn" @click="emit('addTask', status.id)" :title="t('common.newTask')">
                     <q-icon name="add" size="16px" />
                 </button>
             </div>
@@ -134,12 +136,12 @@ function onDrop(e: DragEvent) {
 
                 <div v-else class="task-group__empty">
                     <div v-if="isDragOver" class="drop-indicator drop-indicator--fill" />
-                    <span v-else>Nenhuma tarefa aqui.</span>
+                    <span v-else>{{ t('common.noTasks') }}</span>
                 </div>
 
                 <button class="task-group__add-row" @click="emit('addTask', status.id)">
                     <q-icon name="add" size="15px" />
-                    <span>Adicionar tarefa</span>
+                    <span>{{ t('common.addTask') }}</span>
                 </button>
             </div>
         </Transition>

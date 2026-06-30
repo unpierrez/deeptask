@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import NotificationDropdown from '../notifications/NotificationDropdown.vue'
 
 defineProps<{
@@ -13,17 +14,18 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const { t, locale } = useI18n()
 
 const screenConfig = computed(() => {
     if (route.path.startsWith('/dashboard/report')) {
         return {
-            title: 'Relatório',
-            subtitle: 'Visão geral da sua produtividade',
+            title: t('header.reportTitle'),
+            subtitle: t('header.reportSubtitle'),
             showSearch: false,
         }
     }
     return {
-        title: 'Minhas Tarefas',
+        title: t('header.tasksTitle'),
         subtitle: todayLabel(),
         showSearch: true,
     }
@@ -33,7 +35,7 @@ const searchQuery = defineModel<string>('search', { default: '' })
 
 function todayLabel() {
     const now = new Date()
-    return now.toLocaleDateString('pt-BR', {
+    return now.toLocaleDateString(locale.value, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -58,7 +60,7 @@ function todayLabel() {
                 <input
                     v-model="searchQuery"
                     type="text"
-                    placeholder="Buscar tarefas..."
+                    :placeholder="t('common.search')"
                     class="app-header__search-input"
                 />
             </div>
@@ -67,7 +69,7 @@ function todayLabel() {
 
             <button class="app-header__new-btn" @click="emit('newTask')">
                 <q-icon name="add" size="18px" />
-                <span class="app-header__new-label">Nova tarefa</span>
+                <span class="app-header__new-label">{{ t('common.newTask') }}</span>
             </button>
         </div>
     </header>

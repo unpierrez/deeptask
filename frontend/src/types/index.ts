@@ -65,6 +65,7 @@ export interface ReportKpis {
     openCount: number
     donePct: number
     highCount: number
+    doneToday: number
 }
 
 export interface ReportByStatus {
