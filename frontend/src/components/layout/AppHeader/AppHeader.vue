@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import NotificationDropdown from '../notifications/NotificationDropdown.vue'
+import NotificationDropdown from '../../notifications/NotificationDropdown/NotificationDropdown.vue'
+import { useAppHeader } from './useAppHeader'
 
 defineProps<{
     unreadCount: number
@@ -13,34 +11,8 @@ const emit = defineEmits<{
     toggleMenu: []
 }>()
 
-const route = useRoute()
-const { t, locale } = useI18n()
-
-const screenConfig = computed(() => {
-    if (route.path.startsWith('/dashboard/report')) {
-        return {
-            title: t('header.reportTitle'),
-            subtitle: t('header.reportSubtitle'),
-            showSearch: false,
-        }
-    }
-    return {
-        title: t('header.tasksTitle'),
-        subtitle: todayLabel(),
-        showSearch: true,
-    }
-})
-
 const searchQuery = defineModel<string>('search', { default: '' })
-
-function todayLabel() {
-    const now = new Date()
-    return now.toLocaleDateString(locale.value, {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-    })
-}
+const { t, screenConfig } = useAppHeader()
 </script>
 
 <template>

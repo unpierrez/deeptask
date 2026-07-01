@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import KanbanColumn from './KanbanColumn.vue'
+import KanbanColumn from './KanbanColumn/KanbanColumn.vue'
 import type { Status, Task } from '../../types'
 
 const { t } = useI18n()

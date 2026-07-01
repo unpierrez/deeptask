@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { Status } from '../../types'
+import type { Status } from '../../../types'
+import { useStatusModal } from './useStatusModal'
 
 const props = defineProps<{
     modelValue: boolean
@@ -15,53 +14,7 @@ const emit = defineEmits<{
     delete: [status: Status]
 }>()
 
-const COLOR_PALETTE = [
-    '#9aa3af',
-    '#4f7bd9',
-    '#d99a2b',
-    '#4f9d6f',
-    '#9b5fd0',
-    '#dd5a4b',
-    '#d06a3f',
-    '#3aa6a6',
-]
-
-const title = ref('')
-const color = ref(COLOR_PALETTE[0])
-const isDone = ref(false)
-
-const { t } = useI18n()
-const isEdit = computed(() => Boolean(props.status))
-
-watch(() => props.modelValue, (open) => {
-    if (!open) return
-    if (props.status) {
-        title.value = props.status.title
-        color.value = props.status.color
-        isDone.value = props.status.isDone
-    } else {
-        title.value = ''
-        color.value = COLOR_PALETTE[0]
-        isDone.value = false
-    }
-})
-
-function close() {
-    emit('update:modelValue', false)
-}
-
-function handleSave() {
-    if (!title.value.trim()) return
-    emit('save', { title: title.value.trim(), color: color.value, isDone: isDone.value })
-    close()
-}
-
-function handleDelete() {
-    if (props.status) {
-        emit('delete', props.status)
-        close()
-    }
-}
+const { t, COLOR_PALETTE, title, color, isDone, isEdit, close, handleSave, handleDelete } = useStatusModal(props, emit)
 </script>
 
 <template>

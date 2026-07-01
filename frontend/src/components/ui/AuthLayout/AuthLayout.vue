@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import heroImg from '../../../assets/hero.png'
 import logoImg from '../../../assets/logo.png'
-import { useI18n } from 'vue-i18n'
+import { useAuthLayout } from './useAuthLayout'
 
-const { locale } = useI18n()
-
-const languages = [
-  { code: 'pt-BR', label: 'PT' },
-  { code: 'en',    label: 'EN' },
-]
+const { locale, languages } = useAuthLayout()
 </script>
 
 <template>

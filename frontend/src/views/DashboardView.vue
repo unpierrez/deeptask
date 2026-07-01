@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import AppSidebar from '../components/layout/AppSidebar.vue'
-import AppHeader from '../components/layout/AppHeader.vue'
+import AppSidebar from '../components/layout/AppSidebar/AppSidebar.vue'
+import AppHeader from '../components/layout/AppHeader/AppHeader.vue'
 import { fetchProfile, isAuthenticated } from '../lib/auth'
 import { useTasks } from '../composables/useTasks'
 import { useStatuses } from '../composables/useStatuses'
@@ -23,12 +23,13 @@ const { unreadCount, fetchNotifications } = useNotifications()
 
 const tasksViewRef = ref<{ openNewTask: (statusId?: string) => void } | null>(null)
 
-function handleNewTask() {
+async function handleNewTask() {
     sidebarOpen.value = false
     if (router.currentRoute.value.path !== '/dashboard/tasks') {
-        router.push('/dashboard/tasks')
+        await router.push('/dashboard/tasks')
     }
-    setTimeout(() => tasksViewRef.value?.openNewTask(), 50)
+    await nextTick()
+    tasksViewRef.value?.openNewTask()
 }
 
 onMounted(async () => {
@@ -69,7 +70,9 @@ onMounted(async () => {
             />
 
             <main class="dashboard-main">
-                <RouterView :ref="(c: any) => tasksViewRef = c" />
+                <RouterView v-slot="{ Component }">
+                    <component :is="Component" :ref="(c: any) => (tasksViewRef = c)" />
+                </RouterView>
             </main>
         </div>
     </div>

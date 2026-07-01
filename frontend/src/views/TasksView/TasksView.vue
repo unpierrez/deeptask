@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TaskGroup from '../../components/task/TaskGroup.vue'
+import TaskGroup from '../../components/task/TaskGroup/TaskGroup.vue'
 import KanbanBoard from '../../components/task/KanbanBoard.vue'
-import TaskModal from '../../components/task/TaskModal.vue'
-import StatusModal from '../../components/status/StatusModal.vue'
+import TaskModal from '../../components/task/TaskModal/TaskModal.vue'
+import StatusModal from '../../components/status/StatusModal/StatusModal.vue'
 import { useTasks } from '../../composables/useTasks'
 import { useStatuses } from '../../composables/useStatuses'
 import { useViewPreference } from '../../composables/useViewPreference'
@@ -139,9 +139,9 @@ async function handleSaveTask(data: {
     dueDate: string | null
 }) {
     if (editingTask.value) {
-        await updateTask(editingTask.value.id, data)
+        await updateTask(editingTask.value.id, { ...data, dueDate: data.dueDate ?? undefined })
     } else {
-        const created = await createTask(data)
+        const created = await createTask({ ...data, dueDate: data.dueDate ?? undefined })
         groupStates.value[created.statusId] = false
         allExpanded.value = true
     }

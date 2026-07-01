@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import KanbanCard from './KanbanCard.vue'
-import { useDragDrop } from '../../composables/useDragDrop'
-import type { Status, Task } from '../../types'
+import KanbanCard from '../KanbanCard/KanbanCard.vue'
+import { useKanbanColumn } from './useKanbanColumn'
+import type { Status, Task } from '../../../types'
 
 const props = defineProps<{
     status: Status
@@ -20,61 +18,7 @@ const emit = defineEmits<{
     taskDropped: [payload: { taskId: string; targetStatusId: string; insertBeforeTaskId: string | null }]
 }>()
 
-const { t } = useI18n()
-const { draggingTask, endDrag } = useDragDrop()
-
-const isDragOver = ref(false)
-const dropInsertBeforeId = ref<string | null | undefined>(undefined)
-
-const dropIndicatorIndex = computed(() => {
-    if (dropInsertBeforeId.value === undefined) return -1
-    if (dropInsertBeforeId.value === null) return props.tasks.length
-    const idx = props.tasks.findIndex((t) => t.id === dropInsertBeforeId.value)
-    return idx === -1 ? props.tasks.length : idx
-})
-
-function onDragOver(e: DragEvent) {
-    if (!draggingTask.value) return
-    e.preventDefault()
-    e.dataTransfer!.dropEffect = 'move'
-    isDragOver.value = true
-
-    const rows = [
-        ...(e.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('[data-task-id]'),
-    ].filter((row) => row.dataset.taskId !== draggingTask.value?.id)
-
-    let insertBefore: string | null = null
-    for (const row of rows) {
-        const rect = row.getBoundingClientRect()
-        if (e.clientY < rect.top + rect.height / 2) {
-            insertBefore = row.dataset.taskId!
-            break
-        }
-    }
-    dropInsertBeforeId.value = insertBefore
-}
-
-function onDragLeave(e: DragEvent) {
-    const related = e.relatedTarget as Node | null
-    if (!related || !(e.currentTarget as HTMLElement).contains(related)) {
-        isDragOver.value = false
-        dropInsertBeforeId.value = undefined
-    }
-}
-
-function onDrop(e: DragEvent) {
-    e.preventDefault()
-    isDragOver.value = false
-    if (!draggingTask.value) return
-    const payload = {
-        taskId: draggingTask.value.id,
-        targetStatusId: props.status.id,
-        insertBeforeTaskId: dropInsertBeforeId.value ?? null,
-    }
-    dropInsertBeforeId.value = undefined
-    endDrag()
-    emit('taskDropped', payload)
-}
+const { t, draggingTask, isDragOver, dropIndicatorIndex, onDragOver, onDragLeave, onDrop } = useKanbanColumn(props, (e, payload) => emit(e, payload))
 </script>
 
 <template>

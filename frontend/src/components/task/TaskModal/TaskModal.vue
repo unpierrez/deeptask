@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { Task, Status } from '../../types'
+import type { Task, Status } from '../../../types'
+import { useTaskModal } from './useTaskModal'
 
 const props = defineProps<{
     modelValue: boolean
@@ -23,76 +22,12 @@ const emit = defineEmits<{
     delete: [task: Task]
 }>()
 
-const title = ref('')
-const description = ref('')
-const statusId = ref('')
-const priority = ref('media')
-const tagsInput = ref('')
-const dueDate = ref('')
-
-const { t } = useI18n()
-const isEdit = computed(() => Boolean(props.task))
-
-watch(() => props.modelValue, (open) => {
-    if (!open) return
-    if (props.task) {
-        title.value = props.task.title
-        description.value = props.task.description ?? ''
-        statusId.value = props.task.statusId
-        priority.value = props.task.priority
-        tagsInput.value = props.task.tags.join(', ')
-        dueDate.value = props.task.dueDate ?? ''
-    } else {
-        title.value = ''
-        description.value = ''
-        statusId.value = props.defaultStatusId ?? props.statuses[0]?.id ?? ''
-        priority.value = 'media'
-        tagsInput.value = ''
-        dueDate.value = ''
-    }
-})
-
-const priorities = computed(() => [
-    { value: 'alta', label: t('priorities.alta'), color: '#dd5a4b' },
-    { value: 'media', label: t('priorities.media'), color: '#d99a2b' },
-    { value: 'baixa', label: t('priorities.baixa'), color: '#6b9bd1' },
-])
-
-function close() {
-    emit('update:modelValue', false)
-}
-
-function handleSave() {
-    if (!title.value.trim()) return
-
-    const tags = tagsInput.value
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean)
-
-    emit('save', {
-        title: title.value.trim(),
-        statusId: statusId.value,
-        priority: priority.value,
-        tags,
-        dueDate: dueDate.value.trim() || null,
-        description: description.value.trim() || null,
-    })
-
-    close()
-}
-
-const isMobile = ref(false)
-onMounted(() => {
-    isMobile.value = window.innerWidth <= 768
-})
-
-function handleDelete() {
-    if (props.task) {
-        emit('delete', props.task)
-        close()
-    }
-}
+const {
+    t,
+    title, description, statusId, priority, tagsInput, dueDate, isMobile,
+    isEdit, priorities,
+    close, handleSave, handleDelete,
+} = useTaskModal(props, emit)
 </script>
 
 <template>

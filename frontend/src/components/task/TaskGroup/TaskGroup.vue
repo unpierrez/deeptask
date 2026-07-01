@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import TaskRow from './TaskRow.vue'
-import { useDragDrop } from '../../composables/useDragDrop'
-import type { Status, Task } from '../../types'
+import TaskRow from '../TaskRow/TaskRow.vue'
+import { useTaskGroup } from './useTaskGroup'
+import type { Status, Task } from '../../../types'
 
 const props = defineProps<{
     status: Status
@@ -21,70 +19,7 @@ const emit = defineEmits<{
     taskDropped: [payload: { taskId: string; targetStatusId: string; insertBeforeTaskId: string | null }]
 }>()
 
-const collapsed = ref(props.startCollapsed ?? false)
-
-const { t } = useI18n()
-const { draggingTask, endDrag } = useDragDrop()
-
-const isDragOver = ref(false)
-// undefined = not hovering; null = insert at end; string = insert before this taskId
-const dropInsertBeforeId = ref<string | null | undefined>(undefined)
-
-const dropIndicatorIndex = computed(() => {
-    if (dropInsertBeforeId.value === undefined) return -1
-    if (dropInsertBeforeId.value === null) return props.tasks.length
-    const idx = props.tasks.findIndex((t) => t.id === dropInsertBeforeId.value)
-    return idx === -1 ? props.tasks.length : idx
-})
-
-function onDragOver(e: DragEvent) {
-    if (!draggingTask.value) return
-    e.preventDefault()
-    e.dataTransfer!.dropEffect = 'move'
-    isDragOver.value = true
-
-    // Query all task rows excluding the one being dragged
-    const rows = [
-        ...(e.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('[data-task-id]'),
-    ].filter((row) => row.dataset.taskId !== draggingTask.value?.id)
-
-    let insertBefore: string | null = null
-
-    for (const row of rows) {
-        const rect = row.getBoundingClientRect()
-        if (e.clientY < rect.top + rect.height / 2) {
-            insertBefore = row.dataset.taskId!
-            break
-        }
-    }
-
-    dropInsertBeforeId.value = insertBefore
-}
-
-function onDragLeave(e: DragEvent) {
-    const related = e.relatedTarget as Node | null
-    if (!related || !(e.currentTarget as HTMLElement).contains(related)) {
-        isDragOver.value = false
-        dropInsertBeforeId.value = undefined
-    }
-}
-
-function onDrop(e: DragEvent) {
-    e.preventDefault()
-    isDragOver.value = false
-
-    if (!draggingTask.value) return
-
-    const payload = {
-        taskId: draggingTask.value.id,
-        targetStatusId: props.status.id,
-        insertBeforeTaskId: dropInsertBeforeId.value ?? null,
-    }
-
-    dropInsertBeforeId.value = undefined
-    endDrag()
-    emit('taskDropped', payload)
-}
+const { t, collapsed, isDragOver, dropIndicatorIndex, onDragOver, onDragLeave, onDrop } = useTaskGroup(props, (e, payload) => emit(e, payload))
 </script>
 
 <template>
