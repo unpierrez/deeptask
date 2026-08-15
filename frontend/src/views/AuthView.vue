@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import AuthLayout from '../components/ui/AuthLayout/AuthLayout.vue'
+
+const route = useRoute()
 </script>
 
 <template>
-  <AuthLayout>
+  <AuthLayout :hide-brand="route.name === 'login' || route.name === 'register'">
     <router-view v-slot="{ Component }">
       <transition name="auth-fade" mode="out-in">
         <component :is="Component" />

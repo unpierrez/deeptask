@@ -2,6 +2,7 @@
 import DtInput from "../../components/ui/DtInput/DtInput.vue"
 import DtButton from "../../components/ui/DtButton/DtButton.vue"
 import DtAlert from "../../components/ui/DtAlert/DtAlert.vue"
+import DtLogo from "../../components/ui/DtLogo/DtLogo.vue"
 import { useI18n } from 'vue-i18n'
 import { useRegisterView } from './useRegisterView'
 
@@ -31,8 +32,12 @@ const {
     </template>
 
     <template v-else>
-      <h1 class="page-title">{{ t('register.title') }}</h1>
-      <p class="page-sub">{{ t('register.subtitle') }}</p>
+      <div class="register-brand">
+        <DtLogo :height="40" />
+        <span class="register-brand__name">
+          <span class="deep">Deep</span><span class="task">Task</span>
+        </span>
+      </div>
 
       <DtAlert v-if="error" :message="error" type="error" class="alert-gap" />
 
@@ -125,6 +130,24 @@ const {
   color: #7a828d;
   margin: 0 0 26px;
   line-height: 1.5;
+}
+
+.register-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.register-brand__name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  .deep { color: #141414; }
+  .task { color: #9aa0a8; }
 }
 
 .alert-gap {

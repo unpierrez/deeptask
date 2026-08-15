@@ -2,6 +2,7 @@
 import DtInput from "../../components/ui/DtInput/DtInput.vue"
 import DtButton from "../../components/ui/DtButton/DtButton.vue"
 import DtAlert from "../../components/ui/DtAlert/DtAlert.vue"
+import DtLogo from "../../components/ui/DtLogo/DtLogo.vue"
 import { useI18n } from 'vue-i18n'
 import { useLoginView } from "./useLoginView"
 
@@ -17,8 +18,12 @@ const {
 
 <template>
   <div>
-    <h1 class="page-title">{{ t('login.title') }}</h1>
-    <p class="page-sub">{{ t('login.subtitle') }}</p>
+    <div class="login-brand">
+      <DtLogo :height="40" />
+      <span class="login-brand__name">
+        <span class="deep">Deep</span><span class="task">Task</span>
+      </span>
+    </div>
 
     <DtAlert v-if="error" :message="error" type="error" class="alert-gap" />
 
@@ -121,20 +126,22 @@ const {
 </template>
 
 <style scoped lang="scss">
-.page-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #141414;
-  letter-spacing: -0.03em;
-  margin: 0 0 8px;
-  line-height: 1.15;
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
-.page-sub {
-  font-size: 14.5px;
-  color: #7a828d;
-  margin: 0 0 26px;
-  line-height: 1.5;
+.login-brand__name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  .deep { color: #141414; }
+  .task { color: #9aa0a8; }
 }
 
 .alert-gap {
