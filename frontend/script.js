@@ -18,7 +18,9 @@ const processDir = (dir) => {
       }
 
       const content = fs.readFileSync(fullPath, 'utf8');
-      const scriptMatch = content.match(/<script setup lang="ts">([\s\S]*?)<\/script>/);
+      const scriptMatch = content.match(
+        /<script setup lang="ts">([\s\S]*?)<\/script>/,
+      );
 
       if (scriptMatch) {
         let scriptContent = scriptMatch[1].trim();
@@ -26,12 +28,14 @@ const processDir = (dir) => {
         // extract imports
         const importRegex = /import\s+.*?\s+from\s+['"].*?['"](;|)/g;
         let imports = [];
-        let scriptBody = scriptContent.replace(importRegex, (match) => {
-          imports.push(match);
-          return '';
-        }).trim();
+        let scriptBody = scriptContent
+          .replace(importRegex, (match) => {
+            imports.push(match);
+            return '';
+          })
+          .trim();
 
-        const newImports = imports.map(i => {
+        const newImports = imports.map((i) => {
           // adjust relative paths for going one level deeper
           return i.replace(/from\s+['"](\.\/|\.\.\/)(.*?)['"]/, (m, p1, p2) => {
             return 'from "../' + p1 + p2 + '"';
@@ -42,13 +46,21 @@ const processDir = (dir) => {
         const hookPath = path.join(newFolderPath, hookName + '.ts');
 
         // Extract refs and functions to return
-        const constMatches = scriptBody.match(/(?:const|let|var|function)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g) || [];
-        const returns = Array.from(new Set(constMatches.map(m => m.split(/\s+/)[1])));
+        const constMatches =
+          scriptBody.match(
+            /(?:const|let|var|function)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+          ) || [];
+        const returns = Array.from(
+          new Set(constMatches.map((m) => m.split(/\s+/)[1])),
+        );
 
         const hookContent = `${newImports.join('\n')}
 
 export function ${hookName}() {
-${scriptBody.split('\n').map(l => '  ' + l).join('\n')}
+${scriptBody
+  .split('\n')
+  .map((l) => '  ' + l)
+  .join('\n')}
 
   return {
     ${returns.join(',\n    ')}
@@ -58,20 +70,26 @@ ${scriptBody.split('\n').map(l => '  ' + l).join('\n')}
         fs.writeFileSync(hookPath, hookContent.replace(/\r\n/g, '\n'));
 
         // new vue file
-        const newVueContent = content.replace(scriptMatch[0], `<script setup lang="ts">
-${newImports.filter(i => i.includes('.vue') || i.includes('vue-router') || i.includes('vue') || i.includes('icons')).join('\n')}
+        const newVueContent = content.replace(
+          scriptMatch[0],
+          `<script setup lang="ts">
+${newImports.filter((i) => i.includes('.vue') || i.includes('vue-router') || i.includes('vue') || i.includes('icons')).join('\n')}
 import { ${hookName} } from './${hookName}'
 
 const { ${returns.join(', ')} } = ${hookName}()
-</script>`);
-        fs.writeFileSync(path.join(newFolderPath, fileName + '.vue'), newVueContent);
+</script>`,
+        );
+        fs.writeFileSync(
+          path.join(newFolderPath, fileName + '.vue'),
+          newVueContent,
+        );
         if (fullPath !== path.join(newFolderPath, fileName + '.vue')) {
           fs.unlinkSync(fullPath);
         }
       }
     }
   }
-}
+};
 
 processDir(path.join(__dirname, 'src', 'components'));
 processDir(path.join(__dirname, 'src', 'components', 'ui'));

@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { useDtInput } from './useDtInput'
-
 defineProps<{
-  modelValue: string
-  label?: string
-  type?: string
-  placeholder?: string
-  autocomplete?: string
-  error?: string
-  hint?: string
-  icon?: string
-}>()
+  modelValue: string;
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  autocomplete?: string;
+  error?: string;
+  hint?: string;
+  icon?: string;
+}>();
 
-defineEmits<{ 'update:modelValue': [value: string] }>()
-
-const {} = useDtInput()
+defineEmits<{ 'update:modelValue': [value: string] }>();
 </script>
 
 <template>
   <q-input
     :model-value="modelValue"
-    @update:model-value="$emit('update:modelValue', $event as string)"
     :label="label"
     :type="type as any"
     :placeholder="placeholder"
@@ -32,6 +27,7 @@ const {} = useDtInput()
     dense
     class="dt-input"
     :input-class="'dt-input__native'"
+    @update:model-value="$emit('update:modelValue', $event as string)"
   >
     <template v-if="icon" #prepend>
       <q-icon :name="icon" class="dt-input__icon" />
@@ -82,7 +78,7 @@ const {} = useDtInput()
   .q-field__native,
   .q-field__input {
     color: #141414 !important;
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
     font-size: 0.9375rem !important;
     padding: 0 !important;
     margin: 0 !important;

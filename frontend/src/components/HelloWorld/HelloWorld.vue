@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useHelloWorld } from './useHelloWorld'
-import viteLogo from "../../assets/vite.svg"
-import heroImg from "../../assets/hero.png"
-import vueLogo from "../../assets/vue.svg"
+import { useHelloWorld } from './useHelloWorld';
+import viteLogo from '../../assets/vite.svg';
+import heroImg from '../../assets/hero.png';
+import vueLogo from '../../assets/vue.svg';
 
-const { count } = useHelloWorld()
+const { count } = useHelloWorld();
 </script>
 
 <template>

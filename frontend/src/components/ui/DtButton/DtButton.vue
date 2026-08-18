@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { useDtButton } from './useDtButton'
-
-withDefaults(defineProps<{
-  label?: string
-  loading?: boolean
-  disabled?: boolean
-  type?: 'submit' | 'button' | 'reset'
-  outline?: boolean
-  flat?: boolean
-  size?: string
-  iconRight?: string
-}>(), {
-  type: 'submit',
-  loading: false,
-  disabled: false,
-  outline: false,
-  flat: false,
-  size: 'md',
-})
-
-const {} = useDtButton()
+withDefaults(
+  defineProps<{
+    label?: string;
+    loading?: boolean;
+    disabled?: boolean;
+    type?: 'submit' | 'button' | 'reset';
+    outline?: boolean;
+    flat?: boolean;
+    size?: string;
+    iconRight?: string;
+  }>(),
+  {
+    type: 'submit',
+    loading: false,
+    disabled: false,
+    outline: false,
+    flat: false,
+    size: 'md',
+  },
+);
 </script>
 
 <template>
@@ -38,7 +37,12 @@ const {} = useDtButton()
       <slot v-if="$slots.default" />
       <template v-else>
         <span class="dt-btn__text">{{ label }}</span>
-        <q-icon v-if="iconRight" :name="iconRight" size="16px" class="dt-btn__icon-right" />
+        <q-icon
+          v-if="iconRight"
+          :name="iconRight"
+          size="16px"
+          class="dt-btn__icon-right"
+        />
       </template>
     </template>
     <template #loading>
@@ -57,8 +61,11 @@ const {} = useDtButton()
   color: #fff;
   font-size: 0.9375rem;
   font-weight: 700;
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-  transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  transition:
+    background 0.2s,
+    transform 0.15s,
+    box-shadow 0.15s;
 
   &:hover:not(.disabled) {
     background: #262626 !important;

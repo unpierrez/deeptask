@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import DtLogo from '../DtLogo/DtLogo.vue'
-import { useAuthLayout } from './useAuthLayout'
+import DtLogo from '../DtLogo/DtLogo.vue';
+import { useAuthLayout } from './useAuthLayout';
 
-withDefaults(defineProps<{
-  hideBrand?: boolean
-}>(), {
-  hideBrand: false,
-})
+withDefaults(
+  defineProps<{
+    hideBrand?: boolean;
+  }>(),
+  {
+    hideBrand: false,
+  },
+);
 
-const { locale, languages } = useAuthLayout()
+const { locale, languages } = useAuthLayout();
 </script>
 
 <template>
   <div class="auth-layout">
-
     <!-- Language pill -->
     <div class="auth-layout__lang" role="group" aria-label="Idioma">
       <button
@@ -41,7 +43,6 @@ const { locale, languages } = useAuthLayout()
         <slot />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -90,10 +91,14 @@ const { locale, languages } = useAuthLayout()
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  .deep { color: #141414; }
-  .task { color: #9aa0a8; }
+  .deep {
+    color: #141414;
+  }
+  .task {
+    color: #9aa0a8;
+  }
 }
 
 /* ── Form card ── */
@@ -102,7 +107,9 @@ const { locale, languages } = useAuthLayout()
   background: #fff;
   border: 1px solid #e6e8eb;
   border-radius: 24px;
-  box-shadow: 0 20px 48px -12px rgba(20, 20, 20, 0.14), 0 4px 16px rgba(20, 20, 20, 0.04);
+  box-shadow:
+    0 20px 48px -12px rgba(20, 20, 20, 0.14),
+    0 4px 16px rgba(20, 20, 20, 0.04);
   padding: 40px 36px;
 }
 
@@ -115,7 +122,7 @@ const { locale, languages } = useAuthLayout()
   color: #9aa0a8;
   font-size: 12px;
   font-weight: 600;
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   cursor: pointer;
   transition: all 0.15s;
   letter-spacing: 0.03em;

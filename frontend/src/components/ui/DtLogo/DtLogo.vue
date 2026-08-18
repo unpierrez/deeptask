@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import logoImg from '../../../assets/logo.png'
+import logoImg from '../../../assets/logo.png';
 
-withDefaults(defineProps<{
-  height?: number
-}>(), {
-  height: 32,
-})
+withDefaults(
+  defineProps<{
+    height?: number;
+  }>(),
+  {
+    height: 32,
+  },
+);
 </script>
 
 <template>

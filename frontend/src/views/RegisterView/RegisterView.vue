@@ -1,20 +1,31 @@
 <script setup lang="ts">
-import DtInput from "../../components/ui/DtInput/DtInput.vue"
-import DtButton from "../../components/ui/DtButton/DtButton.vue"
-import DtAlert from "../../components/ui/DtAlert/DtAlert.vue"
-import DtLogo from "../../components/ui/DtLogo/DtLogo.vue"
-import { useI18n } from 'vue-i18n'
-import { useRegisterView } from './useRegisterView'
+import DtInput from '../../components/ui/DtInput/DtInput.vue';
+import DtButton from '../../components/ui/DtButton/DtButton.vue';
+import DtAlert from '../../components/ui/DtAlert/DtAlert.vue';
+import DtLogo from '../../components/ui/DtLogo/DtLogo.vue';
+import { useI18n } from 'vue-i18n';
+import { useRegisterView } from './useRegisterView';
 
-const { t } = useI18n()
+const { t } = useI18n();
 const {
-  name, email, password, confirmPassword,
-  nameError, emailError, passwordError, confirmError,
-  loading, error, success,
-  showPassword, showConfirm,
-  strength, strengthLabel, strengthColor,
+  name,
+  email,
+  password,
+  confirmPassword,
+  nameError,
+  emailError,
+  passwordError,
+  confirmError,
+  loading,
+  error,
+  success,
+  showPassword,
+  showConfirm,
+  strength,
+  strengthLabel,
+  strengthColor,
   handleRegister,
-} = useRegisterView()
+} = useRegisterView();
 </script>
 
 <template>
@@ -27,7 +38,9 @@ const {
         </div>
         <h2 class="page-title">{{ t('register.success.title') }}</h2>
         <p class="page-sub">{{ t('register.success.message') }}</p>
-        <RouterLink to="/login" class="btn-link">{{ t('register.success.goToLogin') }}</RouterLink>
+        <RouterLink to="/login" class="btn-link">{{
+          t('register.success.goToLogin')
+        }}</RouterLink>
       </div>
     </template>
 
@@ -41,16 +54,29 @@ const {
 
       <DtAlert v-if="error" :message="error" type="error" class="alert-gap" />
 
-      <q-form @submit.prevent="handleRegister" class="form">
-
+      <q-form class="form" @submit.prevent="handleRegister">
         <div class="field-wrap">
           <label class="field-label">{{ t('register.fullName') }}</label>
-          <DtInput v-model="name" type="text" :placeholder="t('common.placeholders.fullName')" autocomplete="name" icon="person_outline" :error="nameError" />
+          <DtInput
+            v-model="name"
+            type="text"
+            :placeholder="t('common.placeholders.fullName')"
+            autocomplete="name"
+            icon="person_outline"
+            :error="nameError"
+          />
         </div>
 
         <div class="field-wrap">
           <label class="field-label">{{ t('common.email') }}</label>
-          <DtInput v-model="email" type="email" :placeholder="t('common.placeholders.email')" autocomplete="email" icon="mail_outline" :error="emailError" />
+          <DtInput
+            v-model="email"
+            type="email"
+            :placeholder="t('common.placeholders.email')"
+            autocomplete="email"
+            icon="mail_outline"
+            :error="emailError"
+          />
         </div>
 
         <div class="field-wrap">
@@ -64,19 +90,34 @@ const {
             :error="passwordError"
           >
             <template #append>
-              <button type="button" class="eye-btn" :aria-pressed="showPassword"
+              <button
+                type="button"
+                class="eye-btn"
+                :aria-pressed="showPassword"
                 :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
-                @click="showPassword = !showPassword">
-                <q-icon :name="showPassword ? 'visibility_off' : 'visibility'" size="18px" />
+                @click="showPassword = !showPassword"
+              >
+                <q-icon
+                  :name="showPassword ? 'visibility_off' : 'visibility'"
+                  size="18px"
+                />
               </button>
             </template>
           </DtInput>
           <div v-if="password" class="strength-row">
             <div class="strength-bars">
-              <div v-for="i in 4" :key="i" class="strength-bar"
-                :style="{ background: i <= strength ? strengthColor : '#ecedf0' }" />
+              <div
+                v-for="i in 4"
+                :key="i"
+                class="strength-bar"
+                :style="{
+                  background: i <= strength ? strengthColor : '#ecedf0',
+                }"
+              />
             </div>
-            <span class="strength-label" :style="{ color: strengthColor }">{{ strengthLabel }}</span>
+            <span class="strength-label" :style="{ color: strengthColor }">{{
+              strengthLabel
+            }}</span>
           </div>
         </div>
 
@@ -91,10 +132,17 @@ const {
             :error="confirmError"
           >
             <template #append>
-              <button type="button" class="eye-btn" :aria-pressed="showConfirm"
+              <button
+                type="button"
+                class="eye-btn"
+                :aria-pressed="showConfirm"
                 :aria-label="showConfirm ? 'Ocultar senha' : 'Mostrar senha'"
-                @click="showConfirm = !showConfirm">
-                <q-icon :name="showConfirm ? 'visibility_off' : 'visibility'" size="18px" />
+                @click="showConfirm = !showConfirm"
+              >
+                <q-icon
+                  :name="showConfirm ? 'visibility_off' : 'visibility'"
+                  size="18px"
+                />
               </button>
             </template>
           </DtInput>
@@ -109,7 +157,9 @@ const {
 
       <p class="redirect-text">
         {{ t('register.hasAccount') }}
-        <RouterLink to="/login" class="link-accent">{{ t('register.signIn') }}</RouterLink>
+        <RouterLink to="/login" class="link-accent">{{
+          t('register.signIn')
+        }}</RouterLink>
       </p>
     </template>
   </div>
@@ -144,10 +194,14 @@ const {
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  .deep { color: #141414; }
-  .task { color: #9aa0a8; }
+  .deep {
+    color: #141414;
+  }
+  .task {
+    color: #9aa0a8;
+  }
 }
 
 .alert-gap {
@@ -209,7 +263,9 @@ const {
   transition: color 0.15s;
   line-height: 1;
 
-  &:hover { color: #3a414c; }
+  &:hover {
+    color: #3a414c;
+  }
 
   &:focus-visible {
     outline: 2px solid #141414;
@@ -233,7 +289,9 @@ const {
   text-underline-offset: 2px;
   transition: opacity 0.15s;
 
-  &:hover { opacity: 0.7; }
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 /* Success */
@@ -255,7 +313,9 @@ const {
   justify-content: center;
   margin-bottom: 16px;
 
-  :deep(.q-icon) { color: #141414; }
+  :deep(.q-icon) {
+    color: #141414;
+  }
 }
 .btn-link {
   display: inline-flex;
@@ -270,7 +330,9 @@ const {
   font-weight: 700;
   font-size: 0.9375rem;
   text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+  transition:
+    background 0.2s,
+    transform 0.15s;
 
   &:hover {
     background: #262626;

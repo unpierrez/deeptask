@@ -7,15 +7,15 @@ export type JwtPayload = { sub: string; email: string };
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-    constructor(config: ConfigService) {
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: config.getOrThrow<string>('JWT_SECRET'),
-        });
-    }
+  constructor(config: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: config.getOrThrow<string>('JWT_SECRET'),
+    });
+  }
 
-    validate(payload: JwtPayload) {
-        return { userId: payload.sub, email: payload.email };
-    }
+  validate(payload: JwtPayload) {
+    return { userId: payload.sub, email: payload.email };
+  }
 }

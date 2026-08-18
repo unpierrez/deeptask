@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import AuthLayout from '../components/ui/AuthLayout/AuthLayout.vue'
+import { useRoute } from 'vue-router';
+import AuthLayout from '../components/ui/AuthLayout/AuthLayout.vue';
 
-const route = useRoute()
+const route = useRoute();
 </script>
 
 <template>

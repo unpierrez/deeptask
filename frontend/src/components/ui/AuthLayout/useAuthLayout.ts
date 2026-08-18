@@ -1,12 +1,12 @@
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 
 export function useAuthLayout() {
-    const { locale } = useI18n()
+  const { locale } = useI18n();
 
-    const languages = [
-        { code: 'pt-BR', label: 'PT' },
-        { code: 'en', label: 'EN' },
-    ]
+  const languages = [
+    { code: 'pt-BR', label: 'PT' },
+    { code: 'en', label: 'EN' },
+  ];
 
-    return { locale, languages }
+  return { locale, languages };
 }

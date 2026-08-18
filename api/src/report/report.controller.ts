@@ -6,10 +6,10 @@ import { ReportService } from './report.service';
 @Controller('report')
 @UseGuards(JwtAuthGuard)
 export class ReportController {
-    constructor(private reportService: ReportService) { }
+  constructor(private reportService: ReportService) {}
 
-    @Get()
-    getReport(@CurrentUser() user: { userId: string }) {
-        return this.reportService.getReport(user.userId);
-    }
+  @Get()
+  getReport(@CurrentUser() user: { userId: string }) {
+    return this.reportService.getReport(user.userId);
+  }
 }

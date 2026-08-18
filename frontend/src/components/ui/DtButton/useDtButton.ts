@@ -1,5 +1,3 @@
-
-
 export function useDtButton() {
-  return {}
+  return {};
 }

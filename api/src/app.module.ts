@@ -12,20 +12,18 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ReportModule } from './report/report.module';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
-        ThrottlerModule.forRoot({ throttlers: [{ limit: 100, ttl: 60000 }] }),
-        PrismaModule,
-        UsersModule,
-        AuthModule,
-        MeModule,
-        StatusesModule,
-        TasksModule,
-        NotificationsModule,
-        ReportModule,
-    ],
-    providers: [
-        { provide: APP_GUARD, useClass: ThrottlerGuard },
-    ],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot({ throttlers: [{ limit: 100, ttl: 60000 }] }),
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    MeModule,
+    StatusesModule,
+    TasksModule,
+    NotificationsModule,
+    ReportModule,
+  ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
-export class AppModule { }
+export class AppModule {}

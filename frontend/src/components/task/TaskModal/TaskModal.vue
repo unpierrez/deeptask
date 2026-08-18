@@ -1,380 +1,442 @@
 <script setup lang="ts">
-import type { Task, Status } from '../../../types'
-import { useTaskModal } from './useTaskModal'
+import type { Task, Status } from '../../../types';
+import { useTaskModal } from './useTaskModal';
 
 const props = defineProps<{
-    modelValue: boolean
-    statuses: Status[]
-    task?: Task | null
-    defaultStatusId?: string
-}>()
+  modelValue: boolean;
+  statuses: Status[];
+  task?: Task | null;
+  defaultStatusId?: string;
+}>();
 
 const emit = defineEmits<{
-    'update:modelValue': [value: boolean]
-    save: [data: {
-        title: string
-        statusId: string
-        priority: string
-        tags: string[]
-        dueDate: string | null
-        description: string | null
-    }]
-    delete: [task: Task]
-}>()
+  'update:modelValue': [value: boolean];
+  save: [
+    data: {
+      title: string;
+      statusId: string;
+      priority: string;
+      tags: string[];
+      dueDate: string | null;
+      description: string | null;
+    },
+  ];
+  delete: [task: Task];
+}>();
 
 const {
-    t,
-    title, description, statusId, priority, tagsInput, dueDate, isMobile,
-    isEdit, priorities,
-    close, handleSave, handleDelete,
-} = useTaskModal(props, emit)
+  t,
+  title,
+  description,
+  statusId,
+  priority,
+  tagsInput,
+  dueDate,
+  isMobile,
+  isEdit,
+  priorities,
+  close,
+  handleSave,
+  handleDelete,
+} = useTaskModal(props, emit);
 </script>
 
 <template>
-    <q-dialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" :position="isMobile ? 'bottom' : 'standard'" persistent>
-        <div class="task-modal">
-            <div class="task-modal__header">
-                <h2 class="task-modal__title">{{ isEdit ? t('taskModal.titleEdit') : t('taskModal.titleNew') }}</h2>
-                <button class="task-modal__close" @click="close">
-                    <q-icon name="close" size="18px" />
-                </button>
-            </div>
+  <q-dialog
+    :model-value="modelValue"
+    :position="isMobile ? 'bottom' : 'standard'"
+    persistent
+    @update:model-value="emit('update:modelValue', $event)"
+  >
+    <div class="task-modal">
+      <div class="task-modal__header">
+        <h2 class="task-modal__title">
+          {{ isEdit ? t('taskModal.titleEdit') : t('taskModal.titleNew') }}
+        </h2>
+        <button class="task-modal__close" @click="close">
+          <q-icon name="close" size="18px" />
+        </button>
+      </div>
 
-            <div class="task-modal__body">
-                <div class="task-modal__field">
-                    <label class="task-modal__label">{{ t('taskModal.labelTitle') }}</label>
-                    <input
-                        v-model="title"
-                        class="task-modal__input"
-                        :placeholder="t('taskModal.placeholderTitle')"
-                        @keydown.enter="handleSave"
-                        autofocus
-                    />
-                </div>
-
-                <div class="task-modal__field">
-                    <label class="task-modal__label">{{ t('taskModal.labelDescription') }}</label>
-                    <textarea
-                        v-model="description"
-                        class="task-modal__input task-modal__input--textarea"
-                        :placeholder="t('taskModal.placeholderDescription')"
-                        rows="3"
-                    />
-                </div>
-
-                <div class="task-modal__field">
-                    <label class="task-modal__label">{{ t('taskModal.labelPriority') }}</label>
-                    <div class="task-modal__priority-group">
-                        <button
-                            v-for="p in priorities"
-                            :key="p.value"
-                            class="task-modal__priority-btn"
-                            :class="{ 'task-modal__priority-btn--active': priority === p.value }"
-                            :style="priority === p.value ? { borderColor: p.color, color: p.color, background: p.color + '18' } : {}"
-                            @click="priority = p.value"
-                        >
-                            <div class="task-modal__priority-dot" :style="{ background: p.color }" />
-                            {{ p.label }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="task-modal__field">
-                    <label class="task-modal__label">{{ t('taskModal.labelStatus') }}</label>
-                    <div class="task-modal__status-group">
-                        <button
-                            v-for="s in statuses"
-                            :key="s.id"
-                            class="task-modal__status-btn"
-                            :class="{ 'task-modal__status-btn--active': statusId === s.id }"
-                            :style="statusId === s.id ? { borderColor: s.color, color: s.color, background: s.color + '18' } : {}"
-                            @click="statusId = s.id"
-                        >
-                            <div class="task-modal__status-dot" :style="{ background: s.color }" />
-                            {{ s.title }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="task-modal__row">
-                    <div class="task-modal__field">
-                        <label class="task-modal__label">{{ t('taskModal.labelTags') }}</label>
-                        <input
-                            v-model="tagsInput"
-                            class="task-modal__input"
-                            :placeholder="t('taskModal.placeholderTags')"
-                        />
-                        <span class="task-modal__hint">{{ t('taskModal.hintTags') }}</span>
-                    </div>
-
-                    <div class="task-modal__field">
-                        <label class="task-modal__label">{{ t('taskModal.labelDueDate') }}</label>
-                        <input
-                            v-model="dueDate"
-                            type="date"
-                            class="task-modal__input task-modal__input--date"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-modal__footer">
-                <button v-if="isEdit" class="task-modal__delete-btn" @click="handleDelete">
-                    <q-icon name="delete" size="16px" />
-                    {{ t('common.delete') }}
-                </button>
-                <div class="task-modal__footer-right">
-                    <button class="task-modal__cancel-btn" @click="close">{{ t('common.cancel') }}</button>
-                    <button
-                        class="task-modal__save-btn"
-                        :disabled="!title.trim()"
-                        @click="handleSave"
-                    >
-                        {{ isEdit ? t('common.save') : t('taskModal.btnCreate') }}
-                    </button>
-                </div>
-            </div>
+      <div class="task-modal__body">
+        <div class="task-modal__field">
+          <label class="task-modal__label">{{
+            t('taskModal.labelTitle')
+          }}</label>
+          <input
+            v-model="title"
+            class="task-modal__input"
+            :placeholder="t('taskModal.placeholderTitle')"
+            autofocus
+            @keydown.enter="handleSave"
+          />
         </div>
-    </q-dialog>
+
+        <div class="task-modal__field">
+          <label class="task-modal__label">{{
+            t('taskModal.labelDescription')
+          }}</label>
+          <textarea
+            v-model="description"
+            class="task-modal__input task-modal__input--textarea"
+            :placeholder="t('taskModal.placeholderDescription')"
+            rows="3"
+          />
+        </div>
+
+        <div class="task-modal__field">
+          <label class="task-modal__label">{{
+            t('taskModal.labelPriority')
+          }}</label>
+          <div class="task-modal__priority-group">
+            <button
+              v-for="p in priorities"
+              :key="p.value"
+              class="task-modal__priority-btn"
+              :class="{
+                'task-modal__priority-btn--active': priority === p.value,
+              }"
+              :style="
+                priority === p.value
+                  ? {
+                      borderColor: p.color,
+                      color: p.color,
+                      background: p.color + '18',
+                    }
+                  : {}
+              "
+              @click="priority = p.value"
+            >
+              <div
+                class="task-modal__priority-dot"
+                :style="{ background: p.color }"
+              />
+              {{ p.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="task-modal__field">
+          <label class="task-modal__label">{{
+            t('taskModal.labelStatus')
+          }}</label>
+          <div class="task-modal__status-group">
+            <button
+              v-for="s in statuses"
+              :key="s.id"
+              class="task-modal__status-btn"
+              :class="{ 'task-modal__status-btn--active': statusId === s.id }"
+              :style="
+                statusId === s.id
+                  ? {
+                      borderColor: s.color,
+                      color: s.color,
+                      background: s.color + '18',
+                    }
+                  : {}
+              "
+              @click="statusId = s.id"
+            >
+              <div
+                class="task-modal__status-dot"
+                :style="{ background: s.color }"
+              />
+              {{ s.title }}
+            </button>
+          </div>
+        </div>
+
+        <div class="task-modal__row">
+          <div class="task-modal__field">
+            <label class="task-modal__label">{{
+              t('taskModal.labelTags')
+            }}</label>
+            <input
+              v-model="tagsInput"
+              class="task-modal__input"
+              :placeholder="t('taskModal.placeholderTags')"
+            />
+            <span class="task-modal__hint">{{ t('taskModal.hintTags') }}</span>
+          </div>
+
+          <div class="task-modal__field">
+            <label class="task-modal__label">{{
+              t('taskModal.labelDueDate')
+            }}</label>
+            <input
+              v-model="dueDate"
+              type="date"
+              class="task-modal__input task-modal__input--date"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="task-modal__footer">
+        <button
+          v-if="isEdit"
+          class="task-modal__delete-btn"
+          @click="handleDelete"
+        >
+          <q-icon name="delete" size="16px" />
+          {{ t('common.delete') }}
+        </button>
+        <div class="task-modal__footer-right">
+          <button class="task-modal__cancel-btn" @click="close">
+            {{ t('common.cancel') }}
+          </button>
+          <button
+            class="task-modal__save-btn"
+            :disabled="!title.trim()"
+            @click="handleSave"
+          >
+            {{ isEdit ? t('common.save') : t('taskModal.btnCreate') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </q-dialog>
 </template>
 
 <style scoped lang="scss">
 .task-modal {
-    width: 520px;
-    max-width: calc(100vw - 32px);
-    background: #ffffff;
-    border-radius: 16px;
-    overflow: hidden;
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 20px 20px 0 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+  }
+
+  &__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: #141414;
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  &__close {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    background: #f0f1f3;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s;
+
+    &:hover {
+      background: #e5e6e8;
+      color: #141414;
+    }
+  }
+
+  &__body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 70vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 
     @media (max-width: 768px) {
-        width: 100vw;
-        max-width: 100vw;
-        border-radius: 20px 20px 0 0;
+      padding: 16px 20px;
+      max-height: 65vh;
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    color: #9aa3af;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  &__input {
+    height: 40px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9px;
+    padding: 0 12px;
+    font-size: 0.9rem;
+    color: #141414;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: #f9fafb;
+    outline: none;
+    transition:
+      border-color 0.15s,
+      background 0.15s;
+
+    &:focus {
+      border-color: #a0a0a0;
+      background: #ffffff;
     }
 
-    &__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px 24px 0;
+    &::placeholder {
+      color: #c4c9d0;
     }
 
-    &__title {
-        font-size: 1.0625rem;
-        font-weight: 700;
-        color: #141414;
-        margin: 0;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    &--date {
+      cursor: pointer;
     }
 
-    &__close {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        border: none;
-        background: #f0f1f3;
-        color: #6b7280;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.12s;
+    &--textarea {
+      height: auto;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.5;
+    }
+  }
 
-        &:hover {
-            background: #e5e6e8;
-            color: #141414;
-        }
+  &__priority-group,
+  &__status-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__priority-btn,
+  &__status-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: all 0.12s;
+
+    &:hover {
+      border-color: #c4c9d0;
+      color: #374151;
+    }
+  }
+
+  &__priority-dot,
+  &__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid #f0f1f3;
+  }
+
+  &__footer-right {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  &__cancel-btn {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 9px;
+    border: 1.5px solid #e5e7eb;
+    background: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: background 0.12s;
+
+    &:hover {
+      background: #f9fafb;
+    }
+  }
+
+  &__save-btn {
+    height: 38px;
+    padding: 0 20px;
+    border-radius: 9px;
+    border: none;
+    background: #141414;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: background 0.12s;
+
+    &:hover:not(:disabled) {
+      background: #2a2a2a;
     }
 
-    &__body {
-        padding: 20px 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        max-height: 70vh;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-
-        @media (max-width: 768px) {
-            padding: 16px 20px;
-            max-height: 65vh;
-        }
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
+  }
 
-    &__row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
+  &__delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1.5px solid #fde8e8;
+    background: #fff5f5;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #dd5a4b;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: background 0.12s;
 
-        @media (max-width: 768px) {
-            grid-template-columns: 1fr;
-        }
+    &:hover {
+      background: #fde8e8;
     }
-
-    &__field {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    &__label {
-        font-size: 0.8125rem;
-        font-weight: 600;
-        color: #374151;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-    }
-
-    &__hint {
-        font-size: 0.75rem;
-        color: #9aa3af;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-    }
-
-    &__input {
-        height: 40px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 9px;
-        padding: 0 12px;
-        font-size: 0.9rem;
-        color: #141414;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        background: #f9fafb;
-        outline: none;
-        transition: border-color 0.15s, background 0.15s;
-
-        &:focus {
-            border-color: #a0a0a0;
-            background: #ffffff;
-        }
-
-        &::placeholder {
-            color: #c4c9d0;
-        }
-
-        &--date {
-            cursor: pointer;
-        }
-
-        &--textarea {
-            height: auto;
-            padding: 10px 12px;
-            resize: vertical;
-            min-height: 72px;
-            line-height: 1.5;
-        }
-    }
-
-    &__priority-group,
-    &__status-group {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    &__priority-btn,
-    &__status-btn {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        border: 1.5px solid #e5e7eb;
-        background: #f9fafb;
-        font-size: 0.8125rem;
-        font-weight: 500;
-        color: #6b7280;
-        cursor: pointer;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        transition: all 0.12s;
-
-        &:hover {
-            border-color: #c4c9d0;
-            color: #374151;
-        }
-    }
-
-    &__priority-dot,
-    &__status-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 2px;
-        flex-shrink: 0;
-    }
-
-    &__footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 24px;
-        border-top: 1px solid #f0f1f3;
-    }
-
-    &__footer-right {
-        display: flex;
-        gap: 8px;
-        margin-left: auto;
-    }
-
-    &__cancel-btn {
-        height: 38px;
-        padding: 0 16px;
-        border-radius: 9px;
-        border: 1.5px solid #e5e7eb;
-        background: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #6b7280;
-        cursor: pointer;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        transition: background 0.12s;
-
-        &:hover {
-            background: #f9fafb;
-        }
-    }
-
-    &__save-btn {
-        height: 38px;
-        padding: 0 20px;
-        border-radius: 9px;
-        border: none;
-        background: #141414;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #ffffff;
-        cursor: pointer;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        transition: background 0.12s;
-
-        &:hover:not(:disabled) {
-            background: #2a2a2a;
-        }
-
-        &:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-    }
-
-    &__delete-btn {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        height: 38px;
-        padding: 0 14px;
-        border-radius: 9px;
-        border: 1.5px solid #fde8e8;
-        background: #fff5f5;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #dd5a4b;
-        cursor: pointer;
-        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-        transition: background 0.12s;
-
-        &:hover {
-            background: #fde8e8;
-        }
-    }
+  }
 }
 </style>

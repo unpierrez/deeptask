@@ -1,12 +1,13 @@
 ﻿<script setup lang="ts">
-import DtInput from "../../components/ui/DtInput/DtInput.vue"
-import DtButton from "../../components/ui/DtButton/DtButton.vue"
-import DtAlert from "../../components/ui/DtAlert/DtAlert.vue"
-import { useI18n } from 'vue-i18n'
-import { useForgotPasswordView } from './useForgotPasswordView'
+import DtInput from '../../components/ui/DtInput/DtInput.vue';
+import DtButton from '../../components/ui/DtButton/DtButton.vue';
+import DtAlert from '../../components/ui/DtAlert/DtAlert.vue';
+import { useI18n } from 'vue-i18n';
+import { useForgotPasswordView } from './useForgotPasswordView';
 
-const { t } = useI18n()
-const { email, emailError, loading, error, success, handleReset } = useForgotPasswordView()
+const { t } = useI18n();
+const { email, emailError, loading, error, success, handleReset } =
+  useForgotPasswordView();
 </script>
 
 <template>
@@ -22,7 +23,9 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
           {{ t('forgotPassword.success.message', { email }) }}
         </p>
         <p class="detail-note">{{ t('forgotPassword.success.expiry') }}</p>
-        <RouterLink to="/login" class="btn-link">{{ t('forgotPassword.success.backToLogin') }}</RouterLink>
+        <RouterLink to="/login" class="btn-link">{{
+          t('forgotPassword.success.backToLogin')
+        }}</RouterLink>
       </div>
     </template>
 
@@ -37,7 +40,7 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
 
       <DtAlert v-if="error" :message="error" type="error" />
 
-      <q-form @submit.prevent="handleReset" class="form">
+      <q-form class="form" @submit.prevent="handleReset">
         <DtInput
           v-model="email"
           :label="t('common.email')"
@@ -46,7 +49,15 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
           icon="mail_outline"
           :error="emailError"
         />
-        <DtButton :loading="loading" :label="loading ? t('forgotPassword.submitting') : t('forgotPassword.submit')" icon-right="chevron_right" />
+        <DtButton
+          :loading="loading"
+          :label="
+            loading
+              ? t('forgotPassword.submitting')
+              : t('forgotPassword.submit')
+          "
+          icon-right="chevron_right"
+        />
       </q-form>
     </template>
   </div>
@@ -63,7 +74,9 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
   text-decoration: none;
   margin-bottom: 20px;
   transition: color 0.15s;
-  &:hover { color: #111827; }
+  &:hover {
+    color: #111827;
+  }
 }
 
 .page-title {
@@ -80,19 +93,44 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
   line-height: 1.5;
 }
 
-.form { display: flex; flex-direction: column; gap: 14px; }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
 /* Success */
-.success-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
-.success-icon {
-  width: 60px; height: 60px; border-radius: 50%;
-  background: #f3f4f6; border: 1px solid #e5e7eb;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
-  :deep(.q-icon) { color: #374151; }
+.success-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
 }
-.email-highlight { color: #0f0f0f; font-weight: 600; font-style: normal; }
-.detail-note { font-size: 0.8125rem; color: #9ca3af; margin-top: 4px; }
+.success-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  :deep(.q-icon) {
+    color: #374151;
+  }
+}
+.email-highlight {
+  color: #0f0f0f;
+  font-weight: 600;
+  font-style: normal;
+}
+.detail-note {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
 .btn-link {
   display: inline-flex;
   align-items: center;
@@ -106,6 +144,8 @@ const { email, emailError, loading, error, success, handleReset } = useForgotPas
   font-size: 0.9375rem;
   text-decoration: none;
   transition: background 0.2s;
-  &:hover { background: #262626; }
+  &:hover {
+    background: #262626;
+  }
 }
 </style>

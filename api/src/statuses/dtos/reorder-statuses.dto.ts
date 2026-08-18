@@ -2,16 +2,16 @@ import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class StatusPositionDTO {
-    @IsString()
-    id: string;
+  @IsString()
+  id: string;
 
-    @IsNumber()
-    position: number;
+  @IsNumber()
+  position: number;
 }
 
 export class ReorderStatusesDTO {
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => StatusPositionDTO)
-    items: StatusPositionDTO[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StatusPositionDTO)
+  items: StatusPositionDTO[];
 }

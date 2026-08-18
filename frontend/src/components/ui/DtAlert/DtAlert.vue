@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { useDtAlert } from './useDtAlert'
-
-defineProps<{ message: string; type?: 'error' | 'success' | 'info' }>()
-
-const {} = useDtAlert()
+defineProps<{ message: string; type?: 'error' | 'success' | 'info' }>();
 </script>
 
 <template>
@@ -31,21 +27,27 @@ const {} = useDtAlert()
     background: #fef2f2;
     border: 1px solid #fecaca;
     color: #dc2626;
-    .dt-alert__icon { color: #dc2626; }
+    .dt-alert__icon {
+      color: #dc2626;
+    }
   }
 
   &--success {
     background: #f0fdf4;
     border: 1px solid #bbf7d0;
     color: #16a34a;
-    .dt-alert__icon { color: #16a34a; }
+    .dt-alert__icon {
+      color: #16a34a;
+    }
   }
 
   &--info {
     background: #f0f9ff;
     border: 1px solid #bae6fd;
     color: #0284c7;
-    .dt-alert__icon { color: #0284c7; }
+    .dt-alert__icon {
+      color: #0284c7;
+    }
   }
 }
 </style>
