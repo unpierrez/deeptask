@@ -73,13 +73,12 @@ const {
     <div class="sidebar__footer">
       <div
         class="sidebar__avatar"
-        :style="{ background: user?.avatarColor ?? '#c2864f' }"
+        :style="{ background: user?.avatarColor ?? '#7c5cbf' }"
       >
         {{ initials }}
       </div>
       <div class="sidebar__user-info">
         <span class="sidebar__user-name">{{ user?.name }}</span>
-        <span class="sidebar__user-type">{{ user?.accountType }}</span>
       </div>
       <button class="sidebar__settings-btn" title="Opções">
         <q-icon name="settings" size="18px" />
@@ -367,15 +366,6 @@ const {
     font-size: 0.8125rem;
     font-weight: 600;
     color: #ffffff;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__user-type {
-    font-size: 0.6875rem;
-    color: rgba(255, 255, 255, 0.45);
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     white-space: nowrap;
     overflow: hidden;
