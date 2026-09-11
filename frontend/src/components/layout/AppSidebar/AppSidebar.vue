@@ -80,7 +80,7 @@ const {
       <div class="sidebar__user-info">
         <span class="sidebar__user-name">{{ user?.name }}</span>
       </div>
-      <button class="sidebar__settings-btn" title="Opções">
+      <button class="sidebar__settings-btn" :title="t('common.options')">
         <q-icon name="settings" size="18px" />
         <q-menu anchor="top right" self="bottom right" :offset="[0, 8]">
           <q-list class="sidebar-menu">
@@ -102,10 +102,8 @@ const {
                     t('tasks.currentView', {
                       mode:
                         viewMode === 'kanban'
-                          ? 'Kanban'
-                          : locale === 'en'
-                            ? 'List'
-                            : 'Lista',
+                          ? t('tasks.viewKanbanShort')
+                          : t('tasks.viewListShort'),
                     })
                   }}
                 </div>

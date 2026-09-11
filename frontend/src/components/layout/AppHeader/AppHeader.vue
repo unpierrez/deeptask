@@ -19,7 +19,7 @@ const { t, screenConfig } = useAppHeader();
   <header class="app-header">
     <button
       class="app-header__hamburger"
-      aria-label="Menu"
+      :aria-label="t('common.menu')"
       @click="emit('toggleMenu')"
     >
       <q-icon name="menu" size="22px" />

@@ -53,7 +53,7 @@ const {
       <div class="task-group__header-actions" @click.stop>
         <button
           class="task-group__action-btn"
-          :title="t('common.edit') + ' status'"
+          :title="t('tasks.editStatus')"
           @click="emit('editStatus', status)"
         >
           <q-icon name="edit" size="15px" />

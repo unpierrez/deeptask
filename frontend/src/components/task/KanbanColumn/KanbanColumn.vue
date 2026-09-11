@@ -49,7 +49,7 @@ const {
       <div class="kanban-col__actions">
         <button
           class="kanban-col__action-btn"
-          :title="t('common.edit') + ' status'"
+          :title="t('tasks.editStatus')"
           @click="emit('editStatus', status)"
         >
           <q-icon name="edit" size="14px" />

@@ -79,10 +79,8 @@ export function useAppSidebar(
     saveAsDefault();
     const mode =
       viewMode.value === 'kanban'
-        ? 'Kanban'
-        : locale.value === 'en'
-          ? 'List'
-          : 'Lista';
+        ? t('tasks.viewKanbanShort')
+        : t('tasks.viewListShort');
     $q.notify({
       message: `${t('tasks.saveDefaultView')}: ${mode}`,
       icon: 'check_circle',

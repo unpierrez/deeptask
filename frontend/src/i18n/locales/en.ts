@@ -20,6 +20,8 @@ export default {
     addTask: 'Add task',
     noTasks: 'No tasks here.',
     search: 'Search tasks...',
+    menu: 'Menu',
+    options: 'Options',
   },
 
   nav: {
@@ -42,6 +44,8 @@ export default {
     viewList: 'List view',
     viewKanban: 'Kanban view',
     viewKanbanShort: 'Kanban',
+    viewListShort: 'List',
+    editStatus: 'Edit status',
     collapseAll: 'Collapse all',
     expandAll: 'Expand all',
     saveDefaultView: 'Save default view',
