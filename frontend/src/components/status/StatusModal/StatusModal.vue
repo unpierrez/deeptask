@@ -68,15 +68,9 @@ const {
               class="status-modal__color-btn"
               :style="{ background: c }"
               :class="{ 'status-modal__color-btn--selected': color === c }"
+              :aria-pressed="color === c"
               @click="color = c"
-            >
-              <q-icon
-                v-if="color === c"
-                name="check"
-                size="14px"
-                style="color: white"
-              />
-            </button>
+            />
           </div>
         </div>
 
@@ -92,6 +86,8 @@ const {
           <button
             class="status-modal__toggle"
             :class="{ 'status-modal__toggle--on': isDone }"
+            role="switch"
+            :aria-checked="isDone"
             @click="isDone = !isDone"
           >
             <div class="status-modal__toggle-knob" />
@@ -127,43 +123,50 @@ const {
 
 <style scoped lang="scss">
 .status-modal {
-  width: 420px;
+  width: 400px;
   max-width: calc(100vw - 32px);
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-modal);
   overflow: hidden;
+  color: var(--text);
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px 0;
+    height: 60px;
+    padding: 0 20px 0 24px;
+    border-bottom: 1px solid var(--line);
   }
 
   &__title {
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: #141414;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    line-height: 1.2;
   }
 
   &__close {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
     border: none;
-    background: #f0f1f3;
-    color: #6b7280;
+    background: transparent;
+    color: var(--muted);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.12s;
+    transition:
+      background 0.12s,
+      color 0.12s;
 
     &:hover {
-      background: #e5e6e8;
-      color: #141414;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
@@ -171,7 +174,7 @@ const {
     padding: 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
   }
 
   &__field {
@@ -181,60 +184,56 @@ const {
   }
 
   &__label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #374151;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    text-transform: lowercase;
   }
 
   &__input {
     height: 40px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 9px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 0 12px;
-    font-size: 0.9rem;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background: #f9fafb;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
     outline: none;
-    transition:
-      border-color 0.15s,
-      background 0.15s;
+    transition: border-color 0.15s;
+
+    &:hover {
+      border-color: var(--line-strong);
+    }
 
     &:focus {
-      border-color: #a0a0a0;
-      background: #ffffff;
+      border-color: var(--accent);
     }
 
     &::placeholder {
-      color: #c4c9d0;
+      color: var(--muted);
     }
   }
 
   &__colors {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
   }
 
   &__color-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
-    border: 2px solid transparent;
+    aspect-ratio: 1;
+    width: 100%;
+    border-radius: var(--radius);
+    border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.1s;
-
-    &:hover {
-      transform: scale(1.1);
-    }
+    transition: box-shadow 0.12s;
 
     &--selected {
-      border-color: #141414;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8) inset;
+      box-shadow:
+        0 0 0 2px var(--surface),
+        0 0 0 4px var(--text);
     }
   }
 
@@ -243,25 +242,23 @@ const {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    background: #f9fafb;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
     padding: 12px 14px;
   }
 
   &__toggle-label {
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
     font-weight: 600;
-    color: #141414;
-    margin: 0 0 2px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
+    margin: 0 0 4px;
   }
 
   &__toggle-hint {
-    font-size: 0.75rem;
-    color: #9aa3af;
+    font-size: 12.5px;
+    color: var(--muted);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
   &__toggle {
@@ -269,14 +266,14 @@ const {
     height: 22px;
     min-width: 40px;
     border-radius: 11px;
-    background: #d0d5dd;
+    background: var(--line-strong);
     border: none;
     cursor: pointer;
     position: relative;
     transition: background 0.2s;
 
     &--on {
-      background: #141414;
+      background: var(--accent);
     }
   }
 
@@ -287,12 +284,14 @@ const {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #ffffff;
-    transition: left 0.2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    background: var(--muted);
+    transition:
+      left 0.2s,
+      background 0.2s;
 
     .status-modal__toggle--on & {
       left: 21px;
+      background: var(--bg);
     }
   }
 
@@ -301,7 +300,7 @@ const {
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
-    border-top: 1px solid #f0f1f3;
+    border-top: 1px solid var(--line);
   }
 
   &__footer-right {
@@ -310,39 +309,42 @@ const {
     margin-left: auto;
   }
 
-  &__cancel-btn {
+  &__cancel-btn,
+  &__save-btn,
+  &__delete-btn {
     height: 38px;
-    padding: 0 16px;
-    border-radius: 9px;
-    border: 1.5px solid #e5e7eb;
-    background: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #6b7280;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 13px;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: background 0.12s;
+  }
+
+  &__cancel-btn {
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    background: none;
+    font-weight: 500;
+    color: var(--text-2);
+    transition:
+      background 0.12s,
+      color 0.12s;
 
     &:hover {
-      background: #f9fafb;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__save-btn {
-    height: 38px;
-    padding: 0 20px;
-    border-radius: 9px;
+    padding: 0 18px;
     border: none;
-    background: #141414;
-    font-size: 0.875rem;
+    background: var(--primary-bg);
     font-weight: 600;
-    color: #ffffff;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: background 0.12s;
+    color: var(--primary-fg);
+    transition: opacity 0.12s;
 
     &:hover:not(:disabled) {
-      background: #2a2a2a;
+      opacity: 0.9;
     }
     &:disabled {
       opacity: 0.4;
@@ -353,21 +355,17 @@ const {
   &__delete-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    height: 38px;
-    padding: 0 14px;
-    border-radius: 9px;
-    border: 1.5px solid #fde8e8;
-    background: #fff5f5;
-    font-size: 0.875rem;
+    gap: 6px;
+    padding: 0 10px;
+    margin-left: -10px;
+    border: none;
+    background: none;
     font-weight: 500;
-    color: #dd5a4b;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--danger);
     transition: background 0.12s;
 
     &:hover {
-      background: #fde8e8;
+      background: var(--raised);
     }
   }
 }

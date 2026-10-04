@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DtLogo from '../DtLogo/DtLogo.vue';
+import DtBrand from '../DtBrand/DtBrand.vue';
 import { useAuthLayout } from './useAuthLayout';
 
 withDefaults(
@@ -32,14 +32,11 @@ const { locale, languages } = useAuthLayout();
     <div class="auth-layout__center">
       <!-- Brand -->
       <div v-if="!hideBrand" class="auth-layout__brand">
-        <DtLogo :height="40" />
-        <span class="auth-layout__brand-name">
-          <span class="deep">Deep</span><span class="task">Task</span>
-        </span>
+        <DtBrand />
       </div>
 
-      <!-- Form card -->
-      <div class="auth-layout__card">
+      <!-- Form -->
+      <div class="auth-layout__content">
         <slot />
       </div>
     </div>
@@ -53,7 +50,7 @@ const { locale, languages } = useAuthLayout();
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--bg);
   padding: 32px 24px;
 }
 
@@ -62,78 +59,54 @@ const { locale, languages } = useAuthLayout();
   top: 20px;
   right: 24px;
   display: flex;
-  border: 1px solid #e6e8eb;
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   padding: 3px;
   gap: 2px;
-  background: #fff;
+  background: var(--bg);
   z-index: 2;
 }
 
 .auth-layout__center {
   width: 100%;
-  max-width: 420px;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 /* ── Brand ── */
 .auth-layout__brand {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
-.auth-layout__brand-name {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-
-  .deep {
-    color: #141414;
-  }
-  .task {
-    color: #9aa0a8;
-  }
-}
-
-/* ── Form card ── */
-.auth-layout__card {
+.auth-layout__content {
   width: 100%;
-  background: #fff;
-  border: 1px solid #e6e8eb;
-  border-radius: 24px;
-  box-shadow:
-    0 20px 48px -12px rgba(20, 20, 20, 0.14),
-    0 4px 16px rgba(20, 20, 20, 0.04);
-  padding: 40px 36px;
 }
 
 /* ── Language pill buttons ── */
 .lang-btn {
   padding: 5px 12px;
-  border-radius: 7px;
+  border-radius: 6px;
   border: none;
   background: transparent;
-  color: #9aa0a8;
+  color: var(--muted);
   font-size: 12px;
   font-weight: 600;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: var(--font-mono);
   cursor: pointer;
-  transition: all 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   letter-spacing: 0.03em;
 
   &:hover:not(.lang-btn--active) {
-    color: #3a414c;
+    color: var(--text-2);
   }
 
   &--active {
-    background: #141414;
-    color: #fff;
+    background: var(--line);
+    color: var(--text);
   }
 }
 
@@ -146,11 +119,6 @@ const { locale, languages } = useAuthLayout();
   .auth-layout__lang {
     top: 12px;
     right: 12px;
-  }
-
-  .auth-layout__card {
-    border-radius: 18px;
-    padding: 32px 20px;
   }
 }
 </style>

@@ -2,7 +2,7 @@
 import DtInput from '../../components/ui/DtInput/DtInput.vue';
 import DtButton from '../../components/ui/DtButton/DtButton.vue';
 import DtAlert from '../../components/ui/DtAlert/DtAlert.vue';
-import DtLogo from '../../components/ui/DtLogo/DtLogo.vue';
+import DtBrand from '../../components/ui/DtBrand/DtBrand.vue';
 import { useI18n } from 'vue-i18n';
 import { useLoginView } from './useLoginView';
 
@@ -24,11 +24,11 @@ const {
 <template>
   <div>
     <div class="login-brand">
-      <DtLogo :height="40" />
-      <span class="login-brand__name">
-        <span class="deep">Deep</span><span class="task">Task</span>
-      </span>
+      <DtBrand />
     </div>
+
+    <h1 class="page-title">{{ t('login.title') }}</h1>
+    <p class="page-sub">{{ t('login.subtitle') }}</p>
 
     <DtAlert v-if="error" :message="error" type="error" class="alert-gap" />
 
@@ -178,24 +178,24 @@ const {
 <style scoped lang="scss">
 .login-brand {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
-.login-brand__name {
-  font-size: 20px;
-  font-weight: 800;
+.page-title {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
   letter-spacing: -0.02em;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
 
-  .deep {
-    color: #141414;
-  }
-  .task {
-    color: #9aa0a8;
-  }
+.page-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 28px;
 }
 
 .alert-gap {
@@ -214,28 +214,22 @@ const {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 48px;
-  border: 1px solid #e6e8eb;
-  border-radius: 13px;
-  background: #fff;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #141414;
+  gap: 10px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
   cursor: pointer;
   transition:
     background 0.15s,
     border-color 0.15s;
 
   &:hover {
-    background: #f7f8f9;
-    border-color: #d8dce1;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #141414;
-    outline-offset: 2px;
+    background: var(--raised);
   }
 }
 
@@ -251,14 +245,14 @@ const {
     content: '';
     flex: 1;
     height: 1px;
-    background: #ecedf0;
+    background: var(--line);
   }
 
   &__text {
+    font-family: var(--font-mono);
     font-size: 12px;
-    color: #aab0b8;
+    color: var(--muted);
     white-space: nowrap;
-    font-weight: 500;
   }
 }
 
@@ -266,13 +260,13 @@ const {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .field-wrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field-header {
@@ -282,9 +276,10 @@ const {
 }
 
 .field-label {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #3a414c;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
 }
 
 /* ── Keep me logged in ── */
@@ -293,34 +288,31 @@ const {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  margin-top: -2px;
 }
 
 .keep-check {
   appearance: none;
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
   flex-shrink: 0;
-  border-radius: 6px;
-  border: 1.5px solid #e6e8eb;
-  background: #fff;
+  border-radius: 5px;
+  border: 1.5px solid var(--faint);
+  background: transparent;
   cursor: pointer;
   transition:
     border-color 0.15s,
     background 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
 
   &:hover {
-    border-color: #c4c9d0;
+    border-color: var(--muted);
   }
 
   &:checked {
-    background: #141414;
-    border-color: #141414;
+    background: var(--accent);
+    border-color: var(--accent);
 
     &::after {
       content: '';
@@ -331,22 +323,16 @@ const {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2 6l3 3 5-5'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%230a0a0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2 6l3 3 5-5'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-size: contain;
     }
-  }
-
-  &:focus-visible {
-    outline: 2px solid #141414;
-    outline-offset: 2px;
   }
 }
 
 .keep-label {
   font-size: 13.5px;
-  font-weight: 500;
-  color: #3a414c;
+  color: var(--text-2);
 }
 
 /* ── Eye button ── */
@@ -355,53 +341,47 @@ const {
   border: none;
   padding: 0;
   cursor: pointer;
-  color: #9aa0a8;
+  color: var(--muted);
   display: flex;
   align-items: center;
   transition: color 0.15s;
   line-height: 1;
+  border-radius: 4px;
 
   &:hover {
-    color: #3a414c;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #141414;
-    outline-offset: 2px;
-    border-radius: 4px;
+    color: var(--text-2);
   }
 }
 
 /* ── Links ── */
 .link-subtle {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #7a828d;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
   text-decoration: none;
   transition: color 0.15s;
 
   &:hover {
-    color: #141414;
+    color: var(--text);
   }
 }
 
 .redirect-text {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #9aa0a8;
-  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 24px;
 }
 
 .link-accent {
-  color: #141414;
+  color: var(--text);
   text-decoration: underline;
-  font-weight: 700;
+  font-weight: 500;
   margin-left: 4px;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
   transition: opacity 0.15s;
 
   &:hover {
-    opacity: 0.7;
+    opacity: 0.8;
   }
 }
 </style>

@@ -15,39 +15,29 @@ defineProps<{ message: string; type?: 'error' | 'success' | 'info' }>();
 
 <style scoped lang="scss">
 .dt-alert {
+  --dt-alert-color: var(--danger);
+
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   font-size: 0.8125rem;
   margin-bottom: 18px;
+  background: var(--surface);
+  border: 1px solid var(--dt-alert-color);
+  color: var(--dt-alert-color);
 
-  &--error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-    .dt-alert__icon {
-      color: #dc2626;
-    }
+  &__icon {
+    color: var(--dt-alert-color);
   }
 
   &--success {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #16a34a;
-    .dt-alert__icon {
-      color: #16a34a;
-    }
+    --dt-alert-color: var(--accent);
   }
 
   &--info {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    color: #0284c7;
-    .dt-alert__icon {
-      color: #0284c7;
-    }
+    --dt-alert-color: var(--prio-baixa);
   }
 }
 </style>

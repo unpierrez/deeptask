@@ -85,7 +85,7 @@ onMounted(async () => {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background: #f5f6f8;
+  background: var(--bg);
 }
 
 .dashboard-content {
@@ -105,7 +105,7 @@ onMounted(async () => {
 .mobile-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--backdrop);
   z-index: 99;
 }
 

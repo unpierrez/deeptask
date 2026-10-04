@@ -9,10 +9,10 @@ export function useNotificationDropdown() {
   const open = ref(false);
 
   const iconMap: Record<NotificationType, { icon: string; color: string }> = {
-    due_soon: { icon: 'schedule', color: '#d99a2b' },
-    high_priority: { icon: 'flag', color: '#dd5a4b' },
-    completed: { icon: 'check_circle', color: '#4f9d6f' },
-    achievement: { icon: 'auto_awesome', color: '#9b5fd0' },
+    due_soon: { icon: 'schedule', color: 'var(--prio-media)' },
+    high_priority: { icon: 'flag', color: 'var(--prio-alta)' },
+    completed: { icon: 'check_circle', color: 'var(--accent)' },
+    achievement: { icon: 'auto_awesome', color: 'var(--text-2)' },
   };
 
   function relativeTime(iso: string) {

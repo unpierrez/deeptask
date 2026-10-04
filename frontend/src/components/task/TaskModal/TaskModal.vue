@@ -96,15 +96,7 @@ const {
               :class="{
                 'task-modal__priority-btn--active': priority === p.value,
               }"
-              :style="
-                priority === p.value
-                  ? {
-                      borderColor: p.color,
-                      color: p.color,
-                      background: p.color + '18',
-                    }
-                  : {}
-              "
+              :style="priority === p.value ? { color: p.color } : {}"
               @click="priority = p.value"
             >
               <div
@@ -130,8 +122,7 @@ const {
                 statusId === s.id
                   ? {
                       borderColor: s.color,
-                      color: s.color,
-                      background: s.color + '18',
+                      background: `color-mix(in srgb, ${s.color} 12%, var(--surface))`,
                     }
                   : {}
               "
@@ -202,47 +193,55 @@ const {
 .task-modal {
   width: 520px;
   max-width: calc(100vw - 32px);
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-modal);
   overflow: hidden;
+  color: var(--text);
 
   @media (max-width: 768px) {
     width: 100vw;
     max-width: 100vw;
-    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    border-radius: var(--radius-modal) var(--radius-modal) 0 0;
   }
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px 0;
+    height: 60px;
+    padding: 0 20px 0 24px;
+    border-bottom: 1px solid var(--line);
   }
 
   &__title {
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: #141414;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    line-height: 1.2;
   }
 
   &__close {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
     border: none;
-    background: #f0f1f3;
-    color: #6b7280;
+    background: transparent;
+    color: var(--muted);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.12s;
+    transition:
+      background 0.12s,
+      color 0.12s;
 
     &:hover {
-      background: #e5e6e8;
-      color: #141414;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
@@ -250,7 +249,7 @@ const {
     padding: 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     max-height: 70vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -274,47 +273,51 @@ const {
   &__field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   &__label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #374151;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    text-transform: lowercase;
   }
 
   &__hint {
-    font-size: 0.75rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
   }
 
   &__input {
     height: 40px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 9px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 0 12px;
-    font-size: 0.9rem;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background: #f9fafb;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
     outline: none;
-    transition:
-      border-color 0.15s,
-      background 0.15s;
+    transition: border-color 0.15s;
+
+    &:hover {
+      border-color: var(--line-strong);
+    }
 
     &:focus {
-      border-color: #a0a0a0;
-      background: #ffffff;
+      border-color: var(--accent);
     }
 
     &::placeholder {
-      color: #c4c9d0;
+      color: var(--muted);
     }
 
     &--date {
       cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 13px;
     }
 
     &--textarea {
@@ -326,39 +329,86 @@ const {
     }
   }
 
-  &__priority-group,
+  &__priority-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  &__priority-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    border-radius: 6px;
+    border: none;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      background 0.12s,
+      color 0.12s;
+
+    &:hover {
+      color: var(--text-2);
+    }
+
+    &--active {
+      background: var(--line);
+    }
+  }
+
   &__status-group {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
   }
 
-  &__priority-btn,
   &__status-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    background: #f9fafb;
-    font-size: 0.8125rem;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--text-2);
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: all 0.12s;
+    transition:
+      border-color 0.12s,
+      color 0.12s;
 
     &:hover {
-      border-color: #c4c9d0;
-      color: #374151;
+      border-color: var(--line-strong);
+      color: var(--text);
+    }
+
+    &--active {
+      color: var(--text);
     }
   }
 
-  &__priority-dot,
+  &__priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
   &__status-dot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border-radius: 2px;
     flex-shrink: 0;
   }
@@ -368,7 +418,7 @@ const {
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
-    border-top: 1px solid #f0f1f3;
+    border-top: 1px solid var(--line);
   }
 
   &__footer-right {
@@ -377,39 +427,42 @@ const {
     margin-left: auto;
   }
 
-  &__cancel-btn {
+  &__cancel-btn,
+  &__save-btn,
+  &__delete-btn {
     height: 38px;
-    padding: 0 16px;
-    border-radius: 9px;
-    border: 1.5px solid #e5e7eb;
-    background: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #6b7280;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 13px;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: background 0.12s;
+  }
+
+  &__cancel-btn {
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    background: none;
+    font-weight: 500;
+    color: var(--text-2);
+    transition:
+      background 0.12s,
+      color 0.12s;
 
     &:hover {
-      background: #f9fafb;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__save-btn {
-    height: 38px;
-    padding: 0 20px;
-    border-radius: 9px;
+    padding: 0 18px;
     border: none;
-    background: #141414;
-    font-size: 0.875rem;
+    background: var(--primary-bg);
     font-weight: 600;
-    color: #ffffff;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: background 0.12s;
+    color: var(--primary-fg);
+    transition: opacity 0.12s;
 
     &:hover:not(:disabled) {
-      background: #2a2a2a;
+      opacity: 0.9;
     }
 
     &:disabled {
@@ -421,21 +474,17 @@ const {
   &__delete-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    height: 38px;
-    padding: 0 14px;
-    border-radius: 9px;
-    border: 1.5px solid #fde8e8;
-    background: #fff5f5;
-    font-size: 0.875rem;
+    gap: 6px;
+    padding: 0 10px;
+    margin-left: -10px;
+    border: none;
+    background: none;
     font-weight: 500;
-    color: #dd5a4b;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--danger);
     transition: background 0.12s;
 
     &:hover {
-      background: #fde8e8;
+      background: var(--raised);
     }
   }
 }

@@ -4,18 +4,75 @@
   box-sizing: border-box;
 }
 
-:root {
-  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-  --primary: #0f0f0f;
-}
-
 html,
 body,
 #app {
   height: 100%;
   margin: 0;
   padding: 0;
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--font-sans);
-  background: #fff;
+  color-scheme: dark;
   -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Quasar overrides ── */
+.q-menu {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+  box-shadow: none;
+  color: var(--text);
+}
+
+.q-menu .q-item {
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.q-menu .q-item__section--avatar {
+  min-width: 28px;
+  padding-right: 4px;
+  color: var(--text-2);
+}
+
+.q-menu .q-list {
+  padding: 4px;
+}
+
+.q-dialog__backdrop {
+  background: var(--backdrop);
+}
+
+.q-separator {
+  background: var(--line);
+}
+
+.q-notification {
+  background: var(--primary-bg) !important;
+  color: var(--primary-fg) !important;
+  font-family: var(--font-mono);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.q-notification .q-icon {
+  color: var(--primary-fg);
+}
+
+.q-focus-helper {
+  display: none;
+}
+
+.q-item.q-manual-focusable--focused,
+.q-menu .q-item:hover {
+  background: var(--raised);
 }

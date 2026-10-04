@@ -1,0 +1,39 @@
+:root {
+  /* superfícies */
+  --bg: #0a0a0b;
+  --surface: #111113; /* cards, inputs, modais */
+  --raised: #17171a; /* item ativo, hover */
+  --line: #232327; /* bordas padrão */
+  --line-soft: #1c1c1f; /* divisores de lista */
+  --line-strong: #2e2e33; /* bordas de botão secundário e modal */
+  --backdrop: rgba(5, 5, 6, 0.8);
+
+  /* texto */
+  --text: #ececee;
+  --text-2: #a1a1aa; /* labels, ícones */
+  --muted: #84848d; /* secundário (contraste ≥ 4.5:1 sobre --bg) */
+  --faint: #3a3a40; /* decorativo apenas: alça de drag, borda do checkbox */
+
+  /* destaque e semânticas */
+  --accent: #3ddc84;
+  --on-accent: #0a0a0b;
+  --danger: #ff7a59;
+
+  /* prioridades */
+  --prio-alta: #ff7a59;
+  --prio-media: #e5c15c;
+  --prio-baixa: #7aa2f7;
+
+  /* botão primário (claro sobre escuro) */
+  --primary-bg: #ececee;
+  --primary-fg: #0a0a0b;
+
+  /* tipografia */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+
+  /* forma */
+  --radius: 8px;
+  --radius-card: 10px;
+  --radius-modal: 12px;
+}

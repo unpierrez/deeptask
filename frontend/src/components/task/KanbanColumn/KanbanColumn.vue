@@ -103,60 +103,49 @@ const {
 
 <style scoped lang="scss">
 .kanban-col {
-  width: 292px;
-  min-width: 292px;
+  width: 288px;
+  min-width: 288px;
   display: flex;
   flex-direction: column;
-  background: #f7f8fa;
-  border-radius: 16px;
-  border: 1.5px solid #eaecef;
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
-
-  &--drag-active {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 14px 12px;
-    background: #ffffff;
-    border-radius: 14px 14px 0 0;
-    border-bottom: 1px solid #f0f1f3;
+    height: 44px;
+    padding: 0 4px;
+    border-bottom: 1px solid var(--line-soft);
+    margin-bottom: 10px;
   }
 
   &__header-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    min-width: 0;
   }
 
   &__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
     flex-shrink: 0;
   }
 
   &__title {
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
     font-weight: 600;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__count {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: #9aa3af;
-    background: #f0f1f3;
-    border-radius: 5px;
-    padding: 1px 7px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
   }
 
   &__actions {
@@ -166,18 +155,19 @@ const {
     opacity: 0;
     transition: opacity 0.15s;
 
-    .kanban-col:hover & {
+    .kanban-col:hover &,
+    &:focus-within {
       opacity: 1;
     }
   }
 
   &__action-btn {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
     border: none;
-    background: none;
-    color: #9aa3af;
+    background: transparent;
+    color: var(--muted);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -187,24 +177,27 @@ const {
       color 0.12s;
 
     &:hover {
-      background: #f0f1f3;
-      color: #141414;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__body {
     flex: 1;
     overflow-y: auto;
-    padding: 10px;
+    padding: 2px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     min-height: 100px;
-    max-height: calc(100vh - 270px);
-    transition: background 0.15s;
+    max-height: calc(100vh - 290px);
+    border: 1px dashed transparent;
+    border-radius: var(--radius-card);
+    transition: border-color 0.15s;
 
+    .kanban-col--drag-active &,
     &--empty-over {
-      background: rgba(99, 102, 241, 0.04);
+      border-color: var(--accent);
     }
 
     &::-webkit-scrollbar {
@@ -216,7 +209,7 @@ const {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #d0d5dd;
+      background: var(--line-strong);
       border-radius: 99px;
     }
   }
@@ -226,48 +219,46 @@ const {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
+    gap: 8px;
     padding: 28px 16px;
-    color: #c4c9d0;
-    font-size: 0.8125rem;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
   }
 
   &__empty-icon {
-    opacity: 0.6;
+    color: var(--faint);
   }
 
   &__add-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 11px 14px;
+    gap: 8px;
+    height: 40px;
+    padding: 0 6px;
+    margin-top: 4px;
     background: none;
     border: none;
-    border-top: 1px solid #eaecef;
-    border-radius: 0 0 14px 14px;
-    color: #9aa3af;
-    font-size: 0.8125rem;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     cursor: pointer;
-    transition:
-      color 0.12s,
-      background 0.12s;
+    transition: color 0.12s;
     text-align: left;
 
     &:hover {
-      color: #374151;
-      background: #f0f1f3;
+      color: var(--text);
     }
   }
 }
 
 .drop-indicator {
-  height: 3px;
-  background: #6366f1;
+  height: 2px;
+  background: var(--accent);
   border-radius: 2px;
   flex-shrink: 0;
   pointer-events: none;
-  margin: -4px 0;
+  margin: -3px 0;
 }
 </style>

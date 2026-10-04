@@ -60,7 +60,7 @@ const emit = defineEmits<{
   padding-bottom: 4px;
 
   &::-webkit-scrollbar {
-    height: 5px;
+    height: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -68,43 +68,41 @@ const emit = defineEmits<{
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #d0d5dd;
+    background: var(--line-strong);
     border-radius: 99px;
   }
 
   &__track {
     display: flex;
-    gap: 12px;
+    gap: 20px;
     align-items: flex-start;
     min-width: max-content;
     padding: 2px 1px 4px;
   }
 
   &__new-col {
-    min-width: 180px;
+    width: 240px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 13px 18px;
-    border-radius: 14px;
-    border: 1.5px dashed #d0d5dd;
+    gap: 6px;
+    border-radius: var(--radius-card);
+    border: 1px dashed var(--line-strong);
     background: none;
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     font-weight: 500;
-    color: #9aa3af;
+    color: var(--muted);
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     transition:
       border-color 0.12s,
-      color 0.12s,
-      background 0.12s;
+      color 0.12s;
     align-self: flex-start;
 
     &:hover {
-      border-color: #9aa3af;
-      color: #374151;
-      background: #f9fafb;
+      border-color: var(--muted);
+      color: var(--text);
     }
   }
 }

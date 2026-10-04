@@ -48,9 +48,9 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
         {{ task.description }}
       </p>
       <div v-if="task.tags.length" class="task-row__tags">
-        <span v-for="tag in task.tags" :key="tag" class="task-row__tag">{{
-          tag
-        }}</span>
+        <span v-for="tag in task.tags" :key="tag" class="task-row__tag"
+          >#{{ tag }}</span
+        >
       </div>
     </div>
 
@@ -124,20 +124,16 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
 .task-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-bottom: 1px solid #f4f5f6;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line-soft);
   transition:
     background 0.1s,
     opacity 0.15s;
   cursor: grab;
 
-  &:last-child {
-    border-bottom: none;
-  }
-
   &:hover {
-    background: #fafbfc;
+    background: var(--surface);
   }
 
   &:active {
@@ -145,17 +141,17 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   }
 
   &--done .task-row__title {
-    color: #9aa3af;
+    color: var(--muted);
     text-decoration: line-through;
   }
 
   &--dragging {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: grabbing;
   }
 
   &__drag-handle {
-    color: #d0d5dd;
+    color: var(--faint);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -163,7 +159,7 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     transition: color 0.12s;
 
     .task-row:hover & {
-      color: #9aa3af;
+      color: var(--muted);
     }
   }
 
@@ -173,24 +169,30 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     padding: 0;
     cursor: pointer;
     flex-shrink: 0;
+    border-radius: 5px;
   }
 
   &__checkbox-inner {
     width: 18px;
     height: 18px;
     border-radius: 5px;
-    border: 1.5px solid #d0d5dd;
+    border: 1.5px solid var(--faint);
     display: flex;
     align-items: center;
     justify-content: center;
     transition:
       background 0.15s,
       border-color 0.15s;
-    color: #fff;
+    color: var(--on-accent);
 
-    &--checked {
-      background: #141414;
-      border-color: #141414;
+    .task-row__checkbox:hover & {
+      border-color: var(--muted);
+    }
+
+    &--checked,
+    .task-row__checkbox:hover &--checked {
+      background: var(--accent);
+      border-color: var(--accent);
     }
   }
 
@@ -203,19 +205,17 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   }
 
   &__title {
-    font-size: 0.9rem;
+    font-size: 14.5px;
     font-weight: 500;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__description {
-    font-size: 0.8rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -224,75 +224,76 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
 
   &__tags {
     display: flex;
-    gap: 5px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
   &__tag {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: #6b7280;
-    background: #f0f1f3;
-    border-radius: 5px;
-    padding: 2px 7px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
   }
 
   &__meta {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
     flex-shrink: 0;
   }
 
   &__priority {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.8125rem;
+    gap: 6px;
+    width: 72px;
+    font-family: var(--font-mono);
+    font-size: 12px;
     font-weight: 500;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
   &__priority-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
     flex-shrink: 0;
   }
 
   &__due {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.8125rem;
-    color: #6b7280;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    gap: 6px;
+    width: 92px;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
 
     &--empty {
-      color: #c4c9d0;
+      color: var(--faint);
     }
   }
 
   &__menu-btn {
-    color: #9aa3af;
+    color: var(--muted);
 
     &:hover {
-      color: #141414;
+      color: var(--text);
     }
   }
 }
 
 @media (max-width: 768px) {
   .task-row {
-    padding: 10px 12px;
-    gap: 8px;
+    padding: 12px 4px;
+    gap: 12px;
 
     &__drag-handle {
       display: none;
     }
 
     &__priority {
+      width: auto;
+
       span {
         display: none;
       }
@@ -308,18 +309,8 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   }
 }
 
-:deep(.task-row__menu) {
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-  .q-item {
-    font-size: 0.875rem;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    min-height: 36px;
-  }
-}
-
-.task-row__menu-delete {
-  color: #dd5a4b !important;
+.task-row__menu-delete,
+.task-row__menu-delete :deep(.q-item__section--avatar) {
+  color: var(--danger) !important;
 }
 </style>

@@ -76,10 +76,10 @@ const {
   &__bell {
     width: 38px;
     height: 38px;
-    border-radius: 10px;
-    border: 1px solid #ebebec;
-    background: #f5f6f8;
-    color: #6b7280;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-2);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -87,31 +87,35 @@ const {
     position: relative;
     transition:
       background 0.15s,
-      border-color 0.15s;
+      border-color 0.15s,
+      color 0.15s;
 
     &:hover,
     &--active {
-      background: #ebebec;
-      border-color: #d8d9db;
+      background: var(--raised);
+      border-color: var(--line-strong);
+      color: var(--text);
     }
   }
 
   &__badge {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #dd5a4b;
-    color: #fff;
-    font-size: 0.625rem;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 5px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    border: 1.5px solid #ffffff;
+    border: 2px solid var(--bg);
+    line-height: 1;
   }
 
   &__dropdown {
@@ -119,10 +123,10 @@ const {
     top: calc(100% + 8px);
     right: 0;
     width: 340px;
-    background: #ffffff;
-    border: 1px solid #ebebec;
-    border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: calc(100vw - 24px);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-modal);
     z-index: 100;
     overflow: hidden;
   }
@@ -131,29 +135,31 @@ const {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid #f0f1f3;
+    height: 52px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
   }
 
   &__header-title {
-    font-size: 0.9375rem;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
     font-weight: 600;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
   }
 
   &__mark-all {
-    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--accent);
     background: none;
     border: none;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     padding: 0;
 
     &:hover {
-      color: #141414;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
@@ -167,24 +173,29 @@ const {
     align-items: flex-start;
     gap: 10px;
     padding: 12px 16px;
+    border-bottom: 1px solid var(--line-soft);
     cursor: pointer;
     transition: background 0.12s;
 
-    &:hover {
-      background: #f9fafb;
+    &:last-of-type {
+      border-bottom: none;
     }
 
-    &--unread {
-      background: #fafbff;
+    &:hover {
+      background: var(--raised);
+    }
+
+    &--unread .notif__message {
+      color: var(--text);
     }
   }
 
   &__icon {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    border-radius: 8px;
-    background: #f5f6f8;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,34 +207,40 @@ const {
   }
 
   &__message {
-    font-size: 0.8125rem;
-    color: #2d3748;
+    font-size: 13px;
+    color: var(--text-2);
     margin: 0 0 3px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     line-height: 1.4;
   }
 
   &__time {
-    font-size: 0.75rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
   }
 
   &__dot {
-    width: 8px;
-    height: 8px;
-    min-width: 8px;
-    border-radius: 50%;
-    background: #141414;
-    margin-top: 4px;
+    width: 6px;
+    height: 6px;
+    min-width: 6px;
+    border-radius: 1px;
+    background: var(--accent);
+    margin-top: 6px;
   }
 
   &__empty {
     padding: 24px 16px;
     text-align: center;
-    font-size: 0.875rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+}
+
+@media (max-width: 768px) {
+  .notif__bell {
+    width: 40px;
+    height: 40px;
   }
 }
 

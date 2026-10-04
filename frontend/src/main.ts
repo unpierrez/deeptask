@@ -1,9 +1,11 @@
 import { createApp } from 'vue';
-import './style.css';
+import './styles/tokens.css';
 import { Quasar, Notify, Loading } from 'quasar';
 import '@quasar/extras/material-icons/material-icons.css';
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css';
 import 'quasar/dist/quasar.css';
+// After quasar.css so the global overrides win on equal specificity
+import './style.css';
 import App from './App.vue';
 import router from './router';
 import i18n from './i18n';
@@ -14,15 +16,17 @@ createApp(App)
   .use(Quasar, {
     plugins: { Notify, Loading },
     config: {
+      dark: true,
       brand: {
-        primary: '#0f0f0f',
-        secondary: '#374151',
-        accent: '#1f2937',
-        dark: '#111827',
-        positive: '#16a34a',
-        negative: '#dc2626',
-        info: '#0284c7',
-        warning: '#f97316',
+        primary: '#ececee',
+        secondary: '#a1a1aa',
+        accent: '#3ddc84',
+        dark: '#111113',
+        'dark-page': '#0a0a0b',
+        positive: '#3ddc84',
+        negative: '#ff7a59',
+        info: '#7aa2f7',
+        warning: '#e5c15c',
       },
     },
   })

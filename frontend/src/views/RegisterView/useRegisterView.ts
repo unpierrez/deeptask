@@ -41,8 +41,13 @@ export function useRegisterView() {
   );
   const strengthColor = computed(
     () =>
-      ['', '#ef4444', '#f97316', '#7c3aed', '#2e0287'][strength.value] ??
-      '#2e0287',
+      [
+        '',
+        'var(--danger)',
+        'var(--prio-media)',
+        'var(--prio-baixa)',
+        'var(--accent)',
+      ][strength.value] ?? 'var(--accent)',
   );
 
   const handleRegister = handleSubmit(async (values) => {

@@ -42,28 +42,26 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
 /* Injected globally — not scoped — so Quasar deep styles apply */
 .dt-input {
   .q-field__control {
-    background: #f4f5f6 !important;
-    border-radius: 13px !important;
-    min-height: 50px !important;
+    background: var(--surface) !important;
+    border-radius: var(--radius) !important;
+    min-height: 44px !important;
+    height: 44px;
 
     &::before {
-      border: 1.5px solid #f4f5f6 !important;
-      border-radius: 13px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: var(--radius) !important;
+      transition: border-color 0.15s;
     }
     &::after {
       display: none !important;
     }
     &:hover::before {
-      border-color: #e6e8eb !important;
+      border-color: var(--line-strong) !important;
     }
   }
 
-  &.q-field--focused .q-field__control {
-    background: #fff !important;
-
-    &::before {
-      border-color: #c4c9d0 !important;
-    }
+  &.q-field--focused .q-field__control::before {
+    border-color: var(--accent) !important;
   }
 
   .q-field__label {
@@ -77,16 +75,23 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
 
   .q-field__native,
   .q-field__input {
-    color: #141414 !important;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+    color: var(--text) !important;
+    font-family: var(--font-sans) !important;
     font-size: 0.9375rem !important;
     padding: 0 !important;
     margin: 0 !important;
-    min-height: 50px !important;
-    line-height: 50px !important;
+    min-height: 44px !important;
+    line-height: 44px !important;
 
     &::placeholder {
-      color: #c4c9d0 !important;
+      color: var(--muted) !important;
+      opacity: 1;
+    }
+
+    &:-webkit-autofill {
+      -webkit-text-fill-color: var(--text);
+      -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+      caret-color: var(--text);
     }
   }
 
@@ -98,18 +103,22 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
     align-items: center;
   }
   .q-field__prepend .q-icon {
-    color: #9aa0a8;
+    color: var(--muted);
     transition: color 0.2s;
     font-size: 18px;
   }
   &.q-field--focused .q-field__prepend .q-icon {
-    color: #3a414c;
+    color: var(--text-2);
   }
   .q-field__messages {
-    color: #6b7280 !important;
+    color: var(--muted) !important;
   }
   &.q-field--error .q-field__control::before {
-    border-color: #ef4444 !important;
+    border-color: var(--danger) !important;
+  }
+  &.q-field--error .q-field__messages,
+  &.q-field--error .q-field__bottom {
+    color: var(--danger) !important;
   }
 }
 </style>

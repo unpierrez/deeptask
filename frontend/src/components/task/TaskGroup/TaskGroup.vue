@@ -110,33 +110,33 @@ const {
 
 <style scoped lang="scss">
 .task-group {
-  background: #ffffff;
-  border: 1px solid #ebebec;
-  border-radius: 14px;
-  overflow: hidden;
-
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 13px 16px;
+    height: 44px;
+    padding: 0 4px;
+    border-bottom: 1px solid var(--line-soft);
     cursor: pointer;
     user-select: none;
 
-    &:hover {
-      background: #fafbfc;
+    &:hover .task-group__chevron {
+      color: var(--text-2);
     }
   }
 
   &__header-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    min-width: 0;
   }
 
   &__chevron {
-    color: #9aa3af;
-    transition: transform 0.2s;
+    color: var(--muted);
+    transition:
+      transform 0.2s,
+      color 0.12s;
 
     &--open {
       transform: rotate(90deg);
@@ -144,42 +144,41 @@ const {
   }
 
   &__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
     flex-shrink: 0;
   }
 
   &__title {
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
     font-weight: 600;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__count {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #9aa3af;
-    background: #f0f1f3;
-    border-radius: 5px;
-    padding: 1px 7px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
   }
 
   &__header-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
   }
 
   &__action-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
     border: none;
-    background: none;
-    color: #9aa3af;
+    background: transparent;
+    color: var(--muted);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -189,67 +188,80 @@ const {
       color 0.12s;
 
     &:hover {
-      background: #f0f1f3;
-      color: #141414;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__body {
-    border-top: 1px solid #f0f1f3;
+    border-radius: var(--radius);
 
     &--drag-over {
       min-height: 56px;
-      background: #f8f9ff;
+      outline: 1px dashed var(--accent);
+      outline-offset: -1px;
     }
   }
 
   &__empty {
-    padding: 12px 16px;
-    font-size: 0.875rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    padding: 12px 4px 12px 62px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
     margin: 0;
-    min-height: 44px;
+    min-height: 48px;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--line-soft);
   }
 
   &__add-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
+    gap: 12px;
+    height: 44px;
+    padding: 0 4px 0 32px;
     width: 100%;
     background: none;
     border: none;
-    border-top: 1px solid #f4f5f6;
-    color: #9aa3af;
-    font-size: 0.875rem;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     cursor: pointer;
-    transition:
-      color 0.12s,
-      background 0.12s;
+    transition: color 0.12s;
     text-align: left;
 
+    .q-icon {
+      width: 18px;
+    }
+
     &:hover {
-      color: #141414;
-      background: #fafbfc;
+      color: var(--text);
     }
   }
 }
 
 .drop-indicator {
   height: 2px;
-  background: #6366f1;
+  background: var(--accent);
   border-radius: 2px;
-  margin: 0 16px;
   pointer-events: none;
   flex-shrink: 0;
 
   &--fill {
-    width: calc(100% - 32px);
-    height: 2px;
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-group {
+    &__empty {
+      padding-left: 34px;
+    }
+
+    &__add-row {
+      padding-left: 4px;
+    }
   }
 }
 

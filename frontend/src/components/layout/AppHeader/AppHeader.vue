@@ -53,58 +53,62 @@ const { t, screenConfig } = useAppHeader();
 
 <style scoped lang="scss">
 .app-header {
-  height: 64px;
-  min-height: 64px;
+  height: 72px;
+  min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
-  background: #ffffff;
-  border-bottom: 1px solid #ebebec;
+  padding: 16px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line-soft);
   gap: 16px;
 
   &__hamburger {
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
     background: none;
-    border: none;
-    color: #374151;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--text-2);
     cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
     flex-shrink: 0;
     line-height: 1;
 
     &:hover {
-      background: #f0f1f3;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__titles {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     flex: 1;
     min-width: 0;
   }
 
   &__title {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #141414;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     line-height: 1.2;
+    letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__subtitle {
-    font-size: 0.8125rem;
-    color: #9aa3af;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    text-transform: capitalize;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -121,30 +125,35 @@ const { t, screenConfig } = useAppHeader();
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #f5f6f8;
-    border: 1px solid #ebebec;
-    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 0 12px;
     height: 38px;
-    width: 220px;
+    width: 240px;
+    transition: border-color 0.15s;
+
+    &:focus-within {
+      border-color: var(--accent);
+    }
   }
 
   &__search-icon {
-    color: #9aa3af;
+    color: var(--muted);
     flex-shrink: 0;
   }
 
   &__search-input {
     border: none;
     background: transparent;
-    font-size: 0.875rem;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
     width: 100%;
     outline: none;
 
     &::placeholder {
-      color: #c4c9d0;
+      color: var(--muted);
     }
   }
 
@@ -152,32 +161,38 @@ const { t, screenConfig } = useAppHeader();
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 0 16px;
+    padding: 0 14px;
     height: 38px;
-    background: #141414;
-    color: #ffffff;
+    background: var(--primary-bg);
+    color: var(--primary-fg);
     border: none;
-    border-radius: 10px;
-    font-size: 0.875rem;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 13px;
     font-weight: 600;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     cursor: pointer;
     white-space: nowrap;
-    transition: background 0.15s;
+    transition: opacity 0.15s;
 
     &:hover {
-      background: #2a2a2a;
+      opacity: 0.9;
     }
   }
 }
 
 @media (max-width: 768px) {
   .app-header {
+    height: 64px;
+    min-height: 64px;
     padding: 0 16px;
     gap: 10px;
 
     &__hamburger {
       display: flex;
+    }
+
+    &__title {
+      font-size: 16px;
     }
 
     &__subtitle {
@@ -189,7 +204,8 @@ const { t, screenConfig } = useAppHeader();
     }
 
     &__new-btn {
-      width: 38px;
+      width: 40px;
+      height: 40px;
       padding: 0;
       justify-content: center;
     }

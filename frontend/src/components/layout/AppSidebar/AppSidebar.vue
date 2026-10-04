@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import DtBrand from '../../ui/DtBrand/DtBrand.vue';
 import { useAppSidebar } from './useAppSidebar';
 import type { User, Task, Status } from '../../../types';
 
@@ -25,15 +27,22 @@ const {
   handleSaveDefault,
   handleLogout,
 } = useAppSidebar(props, () => emit('close'));
+
+// Presentation only: 1 cell = 1 task, capped at 20 cells and scaled above that
+const MAX_CELLS = 20;
+const EMPTY_CELLS = 10;
+const progressCells = computed(() => {
+  if (total.value === 0) return Array<boolean>(EMPTY_CELLS).fill(false);
+  const count = Math.min(total.value, MAX_CELLS);
+  const filled = Math.round((doneCount.value / total.value) * count);
+  return Array.from({ length: count }, (_, i) => i < filled);
+});
 </script>
 
 <template>
   <aside class="sidebar" :class="{ 'sidebar--mobile-open': mobileOpen }">
     <div class="sidebar__brand">
-      <div class="sidebar__logo">
-        <img src="/favicon.svg" width="32" height="32" alt="DeepTask" />
-      </div>
-      <span class="sidebar__wordmark">DeepTask</span>
+      <DtBrand class="sidebar__wordmark" />
       <button class="sidebar__close-btn" @click="emit('close')">
         <q-icon name="close" size="20px" />
       </button>
@@ -50,6 +59,11 @@ const {
           >
             <q-icon :name="item.icon" size="18px" />
             <span>{{ item.label }}</span>
+            <span
+              v-if="isActive(item.path)"
+              class="sidebar__nav-marker"
+              aria-hidden="true"
+            />
           </RouterLink>
         </li>
       </ul>
@@ -62,8 +76,17 @@ const {
         }}</span>
         <span class="sidebar__progress-pct">{{ donePct }}%</span>
       </div>
-      <div class="sidebar__progress-bar">
-        <div class="sidebar__progress-fill" :style="{ width: donePct + '%' }" />
+      <div
+        class="sidebar__progress-grid"
+        :style="{ gridTemplateColumns: `repeat(${progressCells.length}, 1fr)` }"
+        aria-hidden="true"
+      >
+        <span
+          v-for="(filled, i) in progressCells"
+          :key="i"
+          class="sidebar__progress-cell"
+          :class="{ 'sidebar__progress-cell--filled': filled }"
+        />
       </div>
       <p class="sidebar__progress-label">
         {{ t('tasks.progressLabel', { done: doneCount, total }) }}
@@ -144,10 +167,11 @@ const {
 
 <style scoped lang="scss">
 .sidebar {
-  width: 248px;
-  min-width: 248px;
+  width: 232px;
+  min-width: 232px;
   height: 100vh;
-  background: #141414;
+  background: var(--bg);
+  border-right: 1px solid var(--line-soft);
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
@@ -163,36 +187,26 @@ const {
     margin-bottom: 28px;
   }
 
-  &__logo {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   &__wordmark {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    letter-spacing: -0.02em;
     flex: 1;
   }
 
   &__close-btn {
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--muted);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
     line-height: 1;
 
     &:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      background: var(--raised);
     }
   }
 
@@ -201,10 +215,12 @@ const {
   }
 
   &__nav-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.35);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
     letter-spacing: 0.08em;
+    text-transform: uppercase;
     margin: 0 0 8px 8px;
   }
 
@@ -221,32 +237,41 @@ const {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: var(--radius);
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.9rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
     font-weight: 500;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     transition:
       background 0.15s,
       color 0.15s;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: rgba(255, 255, 255, 0.85);
+      background: var(--raised);
+      color: var(--text-2);
     }
 
-    &--active {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      font-weight: 600;
+    &--active,
+    &--active:hover {
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
+  &__nav-marker {
+    width: 6px;
+    height: 6px;
+    margin-left: auto;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
   &__progress {
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
     padding: 14px;
     margin: 8px 0;
   }
@@ -254,44 +279,46 @@ const {
   &__progress-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: baseline;
+    margin-bottom: 12px;
   }
 
   &__progress-title {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.65);
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
   }
 
   &__progress-pct {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
   }
 
-  &__progress-bar {
-    height: 5px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 99px;
-    overflow: hidden;
-    margin-bottom: 8px;
+  &__progress-grid {
+    display: grid;
+    gap: 3px;
+    margin-bottom: 10px;
   }
 
-  &__progress-fill {
-    height: 100%;
-    background: #ffffff;
-    border-radius: 99px;
-    transition: width 0.4s ease;
+  &__progress-cell {
+    height: 14px;
+    border-radius: 3px;
+    background: var(--line-soft);
+    transition: background 0.3s;
+
+    &--filled {
+      background: var(--accent);
+    }
   }
 
   &__progress-label {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
     margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
   &__lang-row {
@@ -300,32 +327,34 @@ const {
 
   &__lang {
     display: inline-flex;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 3px;
     gap: 2px;
   }
 
   &__lang-btn {
     padding: 4px 10px;
-    border-radius: 7px;
+    border-radius: 6px;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--muted);
     font-size: 11px;
     font-weight: 600;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
     cursor: pointer;
     letter-spacing: 0.03em;
-    transition: all 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
 
     &:hover:not(&--active) {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-2);
     }
 
     &--active {
-      background: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
+      background: var(--line);
+      color: var(--text);
     }
   }
 
@@ -334,22 +363,22 @@ const {
     align-items: center;
     gap: 10px;
     padding: 12px 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--line-soft);
     margin-top: 4px;
   }
 
   &__avatar {
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text);
   }
 
   &__user-info {
@@ -361,10 +390,9 @@ const {
   }
 
   &__user-name {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -373,20 +401,22 @@ const {
   &__settings-btn {
     background: none;
     border: none;
-    padding: 6px;
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+    color: var(--muted);
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     transition:
       color 0.15s,
       background 0.15s;
     position: relative;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      background: var(--raised);
     }
   }
 }
@@ -402,6 +432,7 @@ const {
     transition: transform 0.25s ease;
     min-width: 0;
     width: 272px;
+    border-right-color: var(--line);
 
     &--mobile-open {
       transform: translateX(0);
@@ -414,41 +445,44 @@ const {
 }
 
 .sidebar-menu {
-  min-width: 200px;
+  min-width: 220px;
   padding: 4px;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 
   &__item {
-    border-radius: 8px;
-    font-size: 0.875rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
     font-weight: 500;
     min-height: 38px;
+    color: var(--text);
+
+    &:hover {
+      background: var(--raised);
+    }
 
     :deep(.q-item__section--avatar) {
       min-width: 28px;
       padding-right: 4px;
+      color: var(--text-2);
     }
 
-    &--danger {
-      color: #dd5a4b;
-
-      &:hover {
-        background: #fff5f5;
-      }
+    &--danger,
+    &--danger :deep(.q-item__section--avatar) {
+      color: var(--danger);
     }
   }
 
   &__item-label {
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
     font-weight: 500;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--text);
   }
 
   &__item-sub {
-    font-size: 0.75rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
     margin-top: 1px;
   }
 

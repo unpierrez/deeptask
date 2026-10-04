@@ -370,10 +370,10 @@ defineExpose({ openNewTask });
 
 <style scoped lang="scss">
 .tasks-view {
-  padding: 24px 28px;
+  padding: 24px 32px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 
   &__toolbar {
     display: flex;
@@ -382,50 +382,50 @@ defineExpose({ openNewTask });
     gap: 12px;
   }
 
-  &__filters {
+  &__filters,
+  &__view-toggle {
     display: flex;
-    gap: 4px;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 3px;
+    gap: 2px;
   }
 
   &__filter-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    border: 1.5px solid transparent;
+    justify-content: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: none;
     background: none;
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     font-weight: 500;
-    color: #9aa3af;
+    color: var(--muted);
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition:
+      background 0.12s,
+      color 0.12s;
 
     &:hover {
-      color: #374151;
+      color: var(--text-2);
     }
 
-    &--active {
-      border-width: 2px;
-      border-color: #141414;
-      color: #141414;
-      font-weight: 600;
-
-      .tasks-view__filter-count {
-        background: #141414;
-        color: #ffffff;
-      }
+    &--active,
+    &--active:hover {
+      background: var(--line);
+      color: var(--text);
     }
   }
 
   &__filter-count {
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: #e9eaec;
-    color: #9aa3af;
-    border-radius: 5px;
-    padding: 1px 6px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
   }
 
   &__toolbar-right {
@@ -434,38 +434,29 @@ defineExpose({ openNewTask });
     gap: 8px;
   }
 
-  &__view-toggle {
-    display: flex;
-    align-items: center;
-    background: #f0f1f3;
-    border-radius: 9px;
-    padding: 3px;
-    gap: 2px;
-  }
-
   &__view-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
-    height: 28px;
+    height: 30px;
     border-radius: 6px;
     border: none;
     background: none;
-    color: #9aa3af;
+    color: var(--muted);
     cursor: pointer;
     transition:
       background 0.12s,
       color 0.12s;
 
     &:hover {
-      color: #374151;
+      color: var(--text-2);
     }
 
-    &--active {
-      background: #ffffff;
-      color: #141414;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    &--active,
+    &--active:hover {
+      background: var(--line);
+      color: var(--text);
     }
   }
 
@@ -473,29 +464,30 @@ defineExpose({ openNewTask });
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 7px 14px;
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    background: #ffffff;
-    font-size: 0.875rem;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--text-2);
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     transition:
       background 0.12s,
       color 0.12s;
 
     &:hover {
-      background: #f0f1f3;
-      color: #141414;
+      background: var(--raised);
+      color: var(--text);
     }
   }
 
   &__list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
   }
 
   &__new-status {
@@ -503,21 +495,22 @@ defineExpose({ openNewTask });
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1.5px dashed #d0d5dd;
+    height: 44px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--line-strong);
     background: none;
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
     font-weight: 500;
-    color: #9aa3af;
+    color: var(--muted);
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: all 0.12s;
+    transition:
+      border-color 0.12s,
+      color 0.12s;
 
     &:hover {
-      border-color: #9aa3af;
-      color: #374151;
-      background: #f9fafb;
+      border-color: var(--muted);
+      color: var(--text);
     }
   }
 }
@@ -525,15 +518,22 @@ defineExpose({ openNewTask });
 @media (max-width: 768px) {
   .tasks-view {
     padding: 16px 12px;
-    gap: 12px;
+    gap: 16px;
+
+    &__filters {
+      flex: 1;
+    }
 
     &__filter-btn {
-      padding: 5px 10px;
-      font-size: 0.8125rem;
+      flex: 1;
+      height: 38px;
+      padding: 0 8px;
+      gap: 6px;
     }
 
     &__expand-btn {
-      width: 36px;
+      width: 44px;
+      height: 44px;
       padding: 0;
       justify-content: center;
       gap: 0;

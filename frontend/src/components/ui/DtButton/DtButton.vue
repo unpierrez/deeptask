@@ -46,7 +46,7 @@ withDefaults(
       </template>
     </template>
     <template #loading>
-      <q-spinner-oval size="18px" color="white" />
+      <q-spinner-oval size="18px" class="dt-btn__spinner" />
     </template>
   </q-btn>
 </template>
@@ -54,30 +54,21 @@ withDefaults(
 <style scoped lang="scss">
 .dt-btn {
   width: 100%;
-  height: 52px;
-  padding: 0 24px;
-  border-radius: 13px;
-  background: #141414;
-  color: #fff;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  transition:
-    background 0.2s,
-    transform 0.15s,
-    box-shadow 0.15s;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius);
+  background: var(--primary-bg);
+  color: var(--primary-fg);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  transition: opacity 0.15s;
 
   &:hover:not(.disabled) {
-    background: #262626 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(20, 20, 20, 0.22) !important;
-  }
-  &:active:not(.disabled) {
-    transform: translateY(0) scale(0.99);
+    opacity: 0.9;
   }
   &.disabled {
     opacity: 0.45 !important;
-    background: #141414 !important;
   }
 
   &__text {
@@ -86,6 +77,10 @@ withDefaults(
 
   &__icon-right {
     margin-left: 8px;
+  }
+
+  &__spinner {
+    color: var(--primary-fg);
   }
 }
 </style>

@@ -2,7 +2,7 @@
 import DtInput from '../../components/ui/DtInput/DtInput.vue';
 import DtButton from '../../components/ui/DtButton/DtButton.vue';
 import DtAlert from '../../components/ui/DtAlert/DtAlert.vue';
-import DtLogo from '../../components/ui/DtLogo/DtLogo.vue';
+import DtBrand from '../../components/ui/DtBrand/DtBrand.vue';
 import { useI18n } from 'vue-i18n';
 import { useRegisterView } from './useRegisterView';
 
@@ -46,11 +46,11 @@ const {
 
     <template v-else>
       <div class="register-brand">
-        <DtLogo :height="40" />
-        <span class="register-brand__name">
-          <span class="deep">Deep</span><span class="task">Task</span>
-        </span>
+        <DtBrand />
       </div>
+
+      <h1 class="page-title">{{ t('register.title') }}</h1>
+      <p class="page-sub">{{ t('register.subtitle') }}</p>
 
       <DtAlert v-if="error" :message="error" type="error" class="alert-gap" />
 
@@ -111,7 +111,7 @@ const {
                 :key="i"
                 class="strength-bar"
                 :style="{
-                  background: i <= strength ? strengthColor : '#ecedf0',
+                  background: i <= strength ? strengthColor : 'var(--line)',
                 }"
               />
             </div>
@@ -166,42 +166,26 @@ const {
 </template>
 
 <style scoped lang="scss">
+.register-brand {
+  display: flex;
+  margin-bottom: 32px;
+}
+
 .page-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #141414;
-  letter-spacing: -0.03em;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   margin: 0 0 8px;
-  line-height: 1.15;
 }
 
 .page-sub {
-  font-size: 14.5px;
-  color: #7a828d;
-  margin: 0 0 26px;
+  font-size: 14px;
+  color: var(--muted);
   line-height: 1.5;
-}
-
-.register-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-
-.register-brand__name {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-
-  .deep {
-    color: #141414;
-  }
-  .task {
-    color: #9aa0a8;
-  }
+  margin: 0 0 28px;
 }
 
 .alert-gap {
@@ -211,19 +195,20 @@ const {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .field-wrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field-label {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #3a414c;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
 }
 
 .strength-row {
@@ -239,15 +224,16 @@ const {
   flex: 1;
 }
 .strength-bar {
-  height: 3px;
+  height: 4px;
   border-radius: 2px;
   flex: 1;
   transition: background 0.3s;
 }
 .strength-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  min-width: 52px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  min-width: 64px;
   text-align: right;
   transition: color 0.3s;
 }
@@ -257,40 +243,34 @@ const {
   border: none;
   padding: 0;
   cursor: pointer;
-  color: #9aa0a8;
+  color: var(--muted);
   display: flex;
   align-items: center;
   transition: color 0.15s;
   line-height: 1;
+  border-radius: 4px;
 
   &:hover {
-    color: #3a414c;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #141414;
-    outline-offset: 2px;
-    border-radius: 4px;
+    color: var(--text-2);
   }
 }
 
 .redirect-text {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #9aa0a8;
-  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 24px;
 }
 
 .link-accent {
-  color: #141414;
+  color: var(--text);
   text-decoration: underline;
-  font-weight: 700;
+  font-weight: 500;
   margin-left: 4px;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
   transition: opacity 0.15s;
 
   &:hover {
-    opacity: 0.7;
+    opacity: 0.8;
   }
 }
 
@@ -303,40 +283,37 @@ const {
   gap: 4px;
 }
 .success-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #f4f5f6;
-  border: 1px solid #e6e8eb;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line-strong);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 
   :deep(.q-icon) {
-    color: #141414;
+    color: var(--accent);
   }
 }
 .btn-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
-  padding: 0 32px;
-  height: 52px;
-  background: #141414;
-  border-radius: 13px;
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.9375rem;
+  margin-top: 12px;
+  padding: 0 24px;
+  height: 44px;
+  background: var(--primary-bg);
+  border-radius: var(--radius);
+  color: var(--primary-fg);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 14px;
   text-decoration: none;
-  transition:
-    background 0.2s,
-    transform 0.15s;
+  transition: opacity 0.15s;
 
   &:hover {
-    background: #262626;
-    transform: translateY(-1px);
+    opacity: 0.9;
   }
 }
 </style>

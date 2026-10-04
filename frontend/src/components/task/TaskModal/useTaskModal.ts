@@ -1,6 +1,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Task, Status } from '../../../types';
+import { PRIORITY_COLORS } from '../../../lib/priority';
 
 interface TaskModalProps {
   modelValue: boolean;
@@ -38,9 +39,17 @@ export function useTaskModal(props: TaskModalProps, emit: TaskModalEmit) {
   const isEdit = computed(() => Boolean(props.task));
 
   const priorities = computed(() => [
-    { value: 'alta', label: t('priorities.alta'), color: '#dd5a4b' },
-    { value: 'media', label: t('priorities.media'), color: '#d99a2b' },
-    { value: 'baixa', label: t('priorities.baixa'), color: '#6b9bd1' },
+    { value: 'alta', label: t('priorities.alta'), color: PRIORITY_COLORS.alta },
+    {
+      value: 'media',
+      label: t('priorities.media'),
+      color: PRIORITY_COLORS.media,
+    },
+    {
+      value: 'baixa',
+      label: t('priorities.baixa'),
+      color: PRIORITY_COLORS.baixa,
+    },
   ]);
 
   watch(

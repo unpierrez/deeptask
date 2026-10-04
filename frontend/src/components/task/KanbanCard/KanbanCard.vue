@@ -31,12 +31,13 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   >
     <div class="kanban-card__top">
       <div
-        class="kanban-card__priority-badge"
-        :style="{
-          color: priorityConfig[task.priority].color,
-          background: priorityConfig[task.priority].bg,
-        }"
+        class="kanban-card__priority"
+        :style="{ color: priorityConfig[task.priority].color }"
       >
+        <span
+          class="kanban-card__priority-dot"
+          :style="{ background: priorityConfig[task.priority].color }"
+        />
         {{ priorityConfig[task.priority].label }}
       </div>
       <q-btn
@@ -92,9 +93,9 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     </p>
 
     <div v-if="task.tags.length" class="kanban-card__tags">
-      <span v-for="tag in task.tags" :key="tag" class="kanban-card__tag">{{
-        tag
-      }}</span>
+      <span v-for="tag in task.tags" :key="tag" class="kanban-card__tag"
+        >#{{ tag }}</span
+      >
     </div>
 
     <div class="kanban-card__footer">
@@ -120,19 +121,18 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
 
 <style scoped lang="scss">
 .kanban-card {
-  background: #ffffff;
-  border: 1px solid #eaecef;
-  border-radius: 12px;
-  padding: 14px 14px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 14px;
   cursor: grab;
   transition:
-    box-shadow 0.15s,
+    border-color 0.15s,
     opacity 0.15s;
   user-select: none;
 
   &:hover {
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
-    border-color: #d8dce2;
+    border-color: var(--line-strong);
   }
 
   &:active {
@@ -140,12 +140,12 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   }
 
   &--done .kanban-card__title {
-    color: #9aa3af;
+    color: var(--muted);
     text-decoration: line-through;
   }
 
   &--dragging {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: grabbing;
   }
 
@@ -156,22 +156,29 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     margin-bottom: 10px;
   }
 
-  &__priority-badge {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    letter-spacing: 0.01em;
+  &__priority {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+
+  &__priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 
   &__menu-btn {
-    color: #c4c9d0;
+    color: var(--muted);
     width: 24px;
     height: 24px;
 
     &:hover {
-      color: #6b7280;
+      color: var(--text);
     }
   }
 
@@ -182,25 +189,24 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     text-align: left;
     cursor: pointer;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     display: block;
+    border-radius: 4px;
   }
 
   &__title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #141414;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    line-height: 1.5;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.45;
     display: block;
   }
 
   &__description {
-    font-size: 0.8rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
     line-height: 1.45;
-    margin: -4px 0 10px;
+    margin: -2px 0 10px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -210,24 +216,22 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   &__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 10px;
     margin-bottom: 12px;
   }
 
   &__tag {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: #6b7280;
-    background: #f0f1f3;
-    border-radius: 5px;
-    padding: 2px 7px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
   }
 
   &__footer {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
   }
 
   &__checkbox {
@@ -236,34 +240,40 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
     padding: 0;
     cursor: pointer;
     flex-shrink: 0;
+    border-radius: 5px;
   }
 
   &__checkbox-inner {
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     border-radius: 5px;
-    border: 1.5px solid #d0d5dd;
+    border: 1.5px solid var(--faint);
     display: flex;
     align-items: center;
     justify-content: center;
     transition:
       background 0.15s,
       border-color 0.15s;
-    color: #fff;
+    color: var(--on-accent);
 
-    &--checked {
-      background: #141414;
-      border-color: #141414;
+    .kanban-card__checkbox:hover & {
+      border-color: var(--muted);
+    }
+
+    &--checked,
+    .kanban-card__checkbox:hover &--checked {
+      background: var(--accent);
+      border-color: var(--accent);
     }
   }
 
   &__due {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
-    color: #9aa3af;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
   }
 
   &__spacer {
@@ -271,30 +281,20 @@ const { t, priorityConfig, formatDate, draggingTask, startDrag, endDrag } =
   }
 
   &__drag-handle {
-    color: #d0d5dd;
+    color: var(--faint);
     display: flex;
     align-items: center;
     cursor: grab;
     transition: color 0.12s;
 
     .kanban-card:hover & {
-      color: #9aa3af;
+      color: var(--muted);
     }
   }
 }
 
-:deep(.kanban-card-menu) {
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-  .q-item {
-    font-size: 0.875rem;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    min-height: 36px;
-  }
-}
-
-.kanban-card-menu__delete {
-  color: #dd5a4b !important;
+.kanban-card-menu__delete,
+.kanban-card-menu__delete :deep(.q-item__section--avatar) {
+  color: var(--danger) !important;
 }
 </style>
