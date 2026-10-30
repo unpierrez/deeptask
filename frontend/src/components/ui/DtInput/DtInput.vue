@@ -48,6 +48,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
     height: 44px;
 
     &::before {
+      z-index: 1;
       border: 1px solid var(--line) !important;
       border-radius: var(--radius) !important;
       transition: border-color 0.15s;
@@ -82,16 +83,24 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
     margin: 0 !important;
     min-height: 44px !important;
     line-height: 44px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0;
 
     &::placeholder {
       color: var(--muted) !important;
       opacity: 1;
     }
 
-    &:-webkit-autofill {
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:autofill {
       -webkit-text-fill-color: var(--text);
-      -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
       caret-color: var(--text);
+      -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+      box-shadow: 0 0 0 1000px var(--surface) inset;
+      transition: background-color 9999s ease-in-out 0s;
     }
   }
 
